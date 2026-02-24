@@ -61,10 +61,11 @@
   >
     <!-- Marker Hiro -->
     <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
-      <!-- Panel belakang (tegak) -->
-      <a-plane id="panel" position="0 0.55 0" rotation="0 0 0"
-        width="1.25" height="0.85" color="#111827" opacity="0.85">
-      </a-plane>
+    <a-box position="0 0.5 0" scale="0.4 0.4 0.4" color="red"></a-box>
+    <!-- Panel belakang (tegak) -->
+    <a-plane id="panel" position="0 0.55 0" rotation="0 0 0"
+    width="1.25" height="0.85" color="#111827" opacity="0.85">
+    </a-plane>
 
       <!-- Judul -->
       <a-text id="judul"
@@ -228,3 +229,4 @@
   </script>
 </body>
 </html>
+
