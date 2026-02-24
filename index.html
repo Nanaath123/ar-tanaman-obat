@@ -3,40 +3,259 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-  <title>AR Tanaman Obat (Scan Gambar)</title>
+  <title>AR Tanaman Obat</title>
 
+  <!-- A-Frame + AR.js -->
   <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
   <style>
     body { margin:0; overflow:hidden; font-family: system-ui, Arial; }
+    .ui {
+      position: fixed; left: 12px; right: 12px; top: 12px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+      z-index: 9999;
+    }
+    .btn {
+      background: rgba(0,0,0,.70);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.18);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn.active { outline: 2px solid rgba(255,255,255,.35); }
+
     .hint {
       position: fixed; left: 12px; right: 12px; bottom: 12px;
-      background: rgba(0,0,0,.55); color: #fff; padding: 10px 12px;
-      border-radius: 10px; font-size: 14px; line-height: 1.35; z-index: 10;
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.35;
+      z-index: 9999;
     }
-    .hint b { font-weight: 700; }
+
+    .status {
+      position: fixed; left: 12px; bottom: 92px;
+      background: rgba(0,0,0,.75);
+      color: #00ff88;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      z-index: 9999;
+      max-width: 90vw;
+      word-break: break-word;
+    }
   </style>
 </head>
 
 <body>
-<a-scene
-  embedded
-  vr-mode-ui="enabled: false"
-  renderer="colorManagement: true;"
-  arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
->
+  <!-- Tombol (untuk mode Hiro) -->
+  <div class="ui" id="ui"></div>
 
-  <a-marker preset="hiro">
-    <a-box position="0 0.5 0" color="red"></a-box>
-  </a-marker>
+  <div class="status" id="status">Loading...</div>
 
-  <a-entity camera></a-entity>
-</a-scene>
+  <a-scene
+    embedded
+    vr-mode-ui="enabled:false"
+    renderer="colorManagement:true;"
+    arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+  >
+    <!-- ========================= -->
+    <!-- MODE 1: MARKER HIRO -->
+    <!-- ========================= -->
+    <a-marker preset="hiro" id="m-hiro">
+      <a-entity id="card-hiro" visible="true">
+        <a-plane position="0 0.55 0" width="1.30" height="0.95" color="#111827" opacity="0.88"></a-plane>
+
+        <a-text id="judul"
+          value="JAHE (Zingiber officinale)"
+          position="-0.62 0.92 0.02"
+          width="1.3"
+          color="#ffffff">
+        </a-text>
+
+        <a-text id="manfaat"
+          value="Manfaat:\n- Menghangatkan tubuh\n- Meredakan mual\n- Membantu masuk angin"
+          position="-0.62 0.66 0.02"
+          width="1.3"
+          color="#e5e7eb">
+        </a-text>
+
+        <a-text id="cara"
+          value="Cara pakai:\n- Seduh irisan jahe + air panas\n- Tambahkan madu (opsional)"
+          position="-0.62 0.36 0.02"
+          width="1.3"
+          color="#d1d5db">
+        </a-text>
+
+        <a-cylinder id="ikon" position="0 0.10 0.05" radius="0.09" height="0.22" color="#f59e0b"></a-cylinder>
+      </a-entity>
+    </a-marker>
+
+    <!-- ========================= -->
+    <!-- MODE 2: MARKER PATTERN (.patt) -->
+    <!-- Scan marker gambar jahe/kunyit/dll yang kamu buat dari generator -->
+    <!-- ========================= -->
+
+    <!-- JAHE -->
+    <a-marker type="pattern" url="pattern-jahe.patt" id="m-jahe">
+      <a-box position="0 0.5 0" scale="0.45 0.45 0.45" color="#f59e0b"></a-box>
+      <a-text value="JAHE\nMenghangatkan tubuh\nMeredakan mual\nMasuk angin"
+        position="-0.7 0.95 0.02" width="1.6" color="#ffffff"></a-text>
+    </a-marker>
+
+    <!-- KUNYIT -->
+    <a-marker type="pattern" url="pattern-kunyit.patt" id="m-kunyit">
+      <a-box position="0 0.5 0" scale="0.45 0.45 0.45" color="#fbbf24"></a-box>
+      <a-text value="KUNYIT\nAntiinflamasi\nBantu nyeri haid\nDukung pencernaan"
+        position="-0.7 0.95 0.02" width="1.6" color="#ffffff"></a-text>
+    </a-marker>
+
+    <!-- TEMULAWAK -->
+    <a-marker type="pattern" url="pattern-temulawak.patt" id="m-temulawak">
+      <a-box position="0 0.5 0" scale="0.45 0.45 0.45" color="#f97316"></a-box>
+      <a-text value="TEMULAWAK\nDukung fungsi hati\nNafsu makan\nBantu pencernaan"
+        position="-0.7 0.95 0.02" width="1.6" color="#ffffff"></a-text>
+    </a-marker>
+
+    <!-- DAUN SIRIH (nama file ada spasi → %20) -->
+    <a-marker type="pattern" url="pattern-daun%20sirih.patt" id="m-daunsirih">
+      <a-box position="0 0.5 0" scale="0.45 0.45 0.45" color="#22c55e"></a-box>
+      <a-text value="DAUN SIRIH\nAntiseptik\nKurangi bau mulut\nLuka ringan"
+        position="-0.7 0.95 0.02" width="1.6" color="#ffffff"></a-text>
+    </a-marker>
+
+    <!-- LIDAH BUAYA (nama file ada spasi → %20) -->
+    <a-marker type="pattern" url="pattern-lidah%20buaya.patt" id="m-lidahbuaya">
+      <a-box position="0 0.5 0" scale="0.45 0.45 0.45" color="#06b6d4"></a-box>
+      <a-text value="LIDAH BUAYA\nTenangkan iritasi\nMelembapkan kulit\nPerawatan rambut"
+        position="-0.7 0.95 0.02" width="1.6" color="#ffffff"></a-text>
+    </a-marker>
+
+    <!-- Kamera -->
+    <a-entity camera></a-entity>
+  </a-scene>
 
   <div class="hint">
-    Scan gambar tanaman yang sudah dibuat marker (file <b>.patt</b>).<br/>
-    Jika belum muncul: gunakan gambar tajam/kontras + cahaya terang.
+    ✅ Mode Hiro: Scan marker <b>Hiro</b> → info muncul + tombol ganti tanaman.<br/>
+    ✅ Mode Pattern: Scan marker gambar yang punya border hitam (hasil generator) → info muncul otomatis.
   </div>
+
+  <script>
+    // =========================
+    // DATA untuk mode HIRO (tombol)
+    // =========================
+    const TANAMAN = {
+      jahe: {
+        nama: "JAHE (Zingiber officinale)",
+        manfaat: ["Menghangatkan tubuh", "Meredakan mual", "Membantu masuk angin"],
+        cara: ["Seduh irisan jahe + air panas", "Tambahkan madu (opsional)"],
+        warna: "#f59e0b"
+      },
+      kunyit: {
+        nama: "KUNYIT (Curcuma longa)",
+        manfaat: ["Antioksidan & antiinflamasi", "Membantu nyeri haid", "Mendukung pencernaan"],
+        cara: ["Parut kunyit, seduh air hangat", "Bisa dicampur asam jawa"],
+        warna: "#fbbf24"
+      },
+      temulawak: {
+        nama: "TEMULAWAK (Curcuma xanthorrhiza)",
+        manfaat: ["Mendukung fungsi hati", "Meningkatkan nafsu makan", "Membantu pencernaan"],
+        cara: ["Rebus irisan 10–15 menit", "Minum hangat 1 gelas"],
+        warna: "#f97316"
+      },
+      daun_sirih: {
+        nama: "DAUN SIRIH (Piper betle)",
+        manfaat: ["Antiseptik alami", "Membantu bau mulut", "Perawatan luka ringan"],
+        cara: ["Rebus 3–5 lembar", "Gunakan airnya setelah hangat"],
+        warna: "#22c55e"
+      },
+      lidah_buaya: {
+        nama: "LIDAH BUAYA (Aloe vera)",
+        manfaat: ["Menenangkan iritasi ringan", "Melembapkan kulit", "Perawatan rambut"],
+        cara: ["Ambil gel, oles tipis", "Untuk rambut: campur sampo"],
+        warna: "#06b6d4"
+      }
+    };
+
+    // UI tombol
+    const ui = document.getElementById("ui");
+    const btnMap = {};
+    function addBtn(key, label) {
+      const b = document.createElement("button");
+      b.className = "btn";
+      b.textContent = label;
+      b.onclick = () => pilihTanaman(key);
+      ui.appendChild(b);
+      btnMap[key] = b;
+    }
+    addBtn("jahe","JAHE");
+    addBtn("kunyit","KUNYIT");
+    addBtn("temulawak","TEMULAWAK");
+    addBtn("daun_sirih","DAUN SIRIH");
+    addBtn("lidah_buaya","LIDAH BUAYA");
+
+    // Update teks HIRO
+    const elJudul = document.getElementById("judul");
+    const elManfaat = document.getElementById("manfaat");
+    const elCara = document.getElementById("cara");
+    const elIkon = document.getElementById("ikon");
+
+    function fmt(label, arr) {
+      return label + ":\n- " + arr.join("\n- ");
+    }
+
+    function pilihTanaman(key) {
+      const t = TANAMAN[key];
+      elJudul.setAttribute("value", t.nama);
+      elManfaat.setAttribute("value", fmt("Manfaat", t.manfaat));
+      elCara.setAttribute("value", fmt("Cara pakai", t.cara));
+      elIkon.setAttribute("color", t.warna);
+
+      Object.values(btnMap).forEach(x => x.classList.remove("active"));
+      btnMap[key].classList.add("active");
+    }
+    pilihTanaman("jahe");
+
+    // =========================
+    // DEBUG STATUS marker
+    // =========================
+    const statusEl = document.getElementById("status");
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    const markers = [
+      { id: "m-hiro", name: "HIRO" },
+      { id: "m-jahe", name: "PATTERN JAHE" },
+      { id: "m-kunyit", name: "PATTERN KUNYIT" },
+      { id: "m-temulawak", name: "PATTERN TEMULAWAK" },
+      { id: "m-daunsirih", name: "PATTERN DAUN SIRIH" },
+      { id: "m-lidahbuaya", name: "PATTERN LIDAH BUAYA" },
+    ];
+
+    let last = "Belum ada marker terdeteksi...";
+    setStatus(last);
+
+    window.addEventListener("load", () => {
+      markers.forEach(m => {
+        const el = document.getElementById(m.id);
+        if (!el) return;
+
+        el.addEventListener("markerFound", () => {
+          last = "✅ TERDETEKSI: " + m.name;
+          setStatus(last);
+        });
+
+        el.addEventListener("markerLost", () => {
+          setStatus("❌ HILANG: " + m.name + " | (cari lagi...)");
+          setTimeout(() => setStatus(last), 700);
+        });
+      });
+    });
+  </script>
 </body>
 </html>
