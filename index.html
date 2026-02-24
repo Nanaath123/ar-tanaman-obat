@@ -20,65 +20,19 @@
 </head>
 
 <body>
-  <a-scene
-    embedded
-    vr-mode-ui="enabled: false"
-    renderer="colorManagement: true;"
-    arjs="
-      sourceType: webcam;
-      facingMode: environment;
-      sourceWidth: 1280; sourceHeight: 720;
-      displayWidth: 1280; displayHeight: 720;
-      debugUIEnabled: false;
-    "
-  >
-    <!-- MARKER: JAHE -->
-    <a-marker type="pattern" url="pattern-jahe.patt" smooth="true">
-      <a-plane position="0 0.55 0" width="1.25" height="0.85" color="#111827" opacity="0.85"></a-plane>
-      <a-text value="JAHE (Zingiber officinale)" position="-0.58 0.90 0.02" width="1.25" color="#ffffff"></a-text>
-      <a-text value="Manfaat:\n- Menghangatkan tubuh\n- Meredakan mual\n- Membantu masuk angin" position="-0.58 0.65 0.02" width="1.25" color="#e5e7eb"></a-text>
-      <a-text value="Cara pakai:\nSeduh irisan jahe + air panas.\nTambahkan madu (opsional)." position="-0.58 0.35 0.02" width="1.25" color="#d1d5db"></a-text>
-      <a-cylinder position="0 0.08 0.05" radius="0.08" height="0.2" color="#f59e0b"></a-cylinder>
-    </a-marker>
+<a-scene
+  embedded
+  vr-mode-ui="enabled: false"
+  renderer="colorManagement: true;"
+  arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+>
 
-    <!-- MARKER: KUNYIT -->
-    <a-marker type="pattern" url="pattern-kunyit.patt" smooth="true">
-      <a-plane position="0 0.55 0" width="1.25" height="0.85" color="#111827" opacity="0.85"></a-plane>
-      <a-text value="KUNYIT (Curcuma longa)" position="-0.58 0.90 0.02" width="1.25" color="#ffffff"></a-text>
-      <a-text value="Manfaat:\n- Antioksidan & antiinflamasi\n- Membantu nyeri haid\n- Mendukung pencernaan" position="-0.58 0.65 0.02" width="1.25" color="#e5e7eb"></a-text>
-      <a-text value="Cara pakai:\nParut kunyit, seduh air hangat.\nBisa dicampur asam jawa." position="-0.58 0.35 0.02" width="1.25" color="#d1d5db"></a-text>
-      <a-cylinder position="0 0.08 0.05" radius="0.08" height="0.2" color="#fbbf24"></a-cylinder>
-    </a-marker>
+  <a-marker preset="hiro">
+    <a-box position="0 0.5 0" color="red"></a-box>
+  </a-marker>
 
-    <!-- MARKER: TEMULAWAK -->
-    <a-marker type="pattern" url="pattern-temulawak.patt" smooth="true">
-      <a-plane position="0 0.55 0" width="1.25" height="0.85" color="#111827" opacity="0.85"></a-plane>
-      <a-text value="TEMULAWAK (Curcuma xanthorrhiza)" position="-0.58 0.90 0.02" width="1.25" color="#ffffff"></a-text>
-      <a-text value="Manfaat:\n- Mendukung fungsi hati\n- Meningkatkan nafsu makan\n- Membantu pencernaan" position="-0.58 0.65 0.02" width="1.25" color="#e5e7eb"></a-text>
-      <a-text value="Cara pakai:\nRebus irisan temulawak 10–15 menit.\nMinum hangat 1 gelas." position="-0.58 0.35 0.02" width="1.25" color="#d1d5db"></a-text>
-      <a-cylinder position="0 0.08 0.05" radius="0.08" height="0.2" color="#f97316"></a-cylinder>
-    </a-marker>
-
-   <!-- MARKER: DAUN SIRIH -->
-<a-marker type="pattern" url="pattern-daun-sirih.patt" smooth="true">
-  <a-plane position="0 0.55 0" width="1.25" height="0.85" color="#111827" opacity="0.85"></a-plane>
-  <a-text value="DAUN SIRIH (Piper betle)" position="-0.58 0.90 0.02" width="1.25" color="#ffffff"></a-text>
-  <a-text value="Manfaat:\n- Antiseptik alami\n- Membantu bau mulut\n- Perawatan luka ringan" position="-0.58 0.65 0.02" width="1.25" color="#e5e7eb"></a-text>
-  <a-text value="Cara pakai:\nRebus 3–5 lembar.\nGunakan airnya setelah hangat." position="-0.58 0.35 0.02" width="1.25" color="#d1d5db"></a-text>
-  <a-cylinder position="0 0.08 0.05" radius="0.08" height="0.2" color="#22c55e"></a-cylinder>
-</a-marker>
-
-<!-- MARKER: LIDAH BUAYA -->
-<a-marker type="pattern" url="pattern-lidah-buaya.patt" smooth="true">
-  <a-plane position="0 0.55 0" width="1.25" height="0.85" color="#111827" opacity="0.85"></a-plane>
-  <a-text value="LIDAH BUAYA (Aloe vera)" position="-0.58 0.90 0.02" width="1.25" color="#ffffff"></a-text>
-  <a-text value="Manfaat:\n- Menenangkan iritasi ringan\n- Melembapkan kulit\n- Perawatan rambut" position="-0.58 0.65 0.02" width="1.25" color="#e5e7eb"></a-text>
-  <a-text value="Cara pakai:\nAmbil gel, oles tipis.\nUntuk rambut: campur sampo." position="-0.58 0.35 0.02" width="1.25" color="#d1d5db"></a-text>
-  <a-cylinder position="0 0.08 0.05" radius="0.08" height="0.2" color="#06b6d4"></a-cylinder>
-</a-marker>
-
-    <a-entity camera></a-entity>
-  </a-scene>
+  <a-entity camera></a-entity>
+</a-scene>
 
   <div class="hint">
     Scan gambar tanaman yang sudah dibuat marker (file <b>.patt</b>).<br/>
