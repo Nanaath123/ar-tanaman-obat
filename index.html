@@ -1,78 +1,230 @@
 <!DOCTYPE html>
 <html lang="id">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AR Tanaman Obat</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>AR Tanaman Obat (Marker Hiro)</title>
 
-    <!-- A-Frame + AR.js (gratis) -->
-    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+  <!-- A-Frame + AR.js -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 
-    <style>
-      body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
-      .hint {
-        position: fixed; left: 12px; right: 12px; bottom: 12px;
-        background: rgba(0,0,0,.55); color: #fff; padding: 10px 12px;
-        border-radius: 10px; font-size: 14px; line-height: 1.35;
+  <style>
+    body { margin:0; overflow:hidden; font-family: system-ui, Arial; }
+    .ui {
+      position: fixed;
+      left: 12px; right: 12px; top: 12px;
+      display: flex; gap: 8px; flex-wrap: wrap;
+      z-index: 10;
+    }
+    .btn {
+      background: rgba(0,0,0,.65);
+      color: #fff;
+      border: 1px solid rgba(255,255,255,.15);
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .btn.active { outline: 2px solid rgba(255,255,255,.35); }
+    .hint {
+      position: fixed;
+      left: 12px; right: 12px; bottom: 12px;
+      background: rgba(0,0,0,.55);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.35;
+      z-index: 10;
+    }
+    .hint b { font-weight: 700; }
+  </style>
+</head>
+
+<body>
+  <!-- Tombol ganti tanaman -->
+  <div class="ui" id="ui"></div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="colorManagement: true;"
+    arjs="
+      sourceType: webcam;
+      facingMode: environment;
+      sourceWidth: 1280; sourceHeight: 720;
+      displayWidth: 1280; displayHeight: 720;
+      debugUIEnabled: false;
+    "
+  >
+    <!-- Marker Hiro -->
+    <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
+      <!-- Panel belakang (tegak) -->
+      <a-plane id="panel" position="0 0.55 0" rotation="0 0 0"
+        width="1.25" height="0.85" color="#111827" opacity="0.85">
+      </a-plane>
+
+      <!-- Judul -->
+      <a-text id="judul"
+        value="JAHE"
+        position="-0.58 0.90 0.02"
+        rotation="0 0 0"
+        width="1.25"
+        color="#ffffff">
+      </a-text>
+
+      <!-- Manfaat -->
+      <a-text id="manfaat"
+        value="Manfaat:\n- ..."
+        position="-0.58 0.70 0.02"
+        rotation="0 0 0"
+        width="1.25"
+        color="#e5e7eb">
+      </a-text>
+
+      <!-- Cara pakai -->
+      <a-text id="cara"
+        value="Cara pakai:\n- ..."
+        position="-0.58 0.40 0.02"
+        rotation="0 0 0"
+        width="1.25"
+        color="#d1d5db">
+      </a-text>
+
+      <!-- Ikon 3D sederhana -->
+      <a-cylinder id="ikon" position="0 0.08 0.05" radius="0.08" height="0.2" color="#f59e0b"></a-cylinder>
+    </a-marker>
+
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <div class="hint">
+    Arahkan kamera ke <b>marker Hiro</b> (lebih bagus di-print A4).<br/>
+    Kalau belum muncul, pastikan <b>cahaya terang</b> dan marker <b>tidak blur</b>.
+  </div>
+
+  <script>
+    // =========================
+    // DATA TANAMAN (EDIT DI SINI)
+    // =========================
+    const TANAMAN = {
+      jahe: {
+        nama: "JAHE (Zingiber officinale)",
+        manfaat: [
+          "Menghangatkan tubuh",
+          "Meredakan mual",
+          "Membantu masuk angin"
+        ],
+        cara: [
+          "Seduh irisan jahe + air panas",
+          "Tambahkan madu (opsional)"
+        ],
+        warnaIkon: "#f59e0b"
+      },
+      kunyit: {
+        nama: "KUNYIT (Curcuma longa)",
+        manfaat: [
+          "Antioksidan & antiinflamasi",
+          "Membantu nyeri haid",
+          "Mendukung kesehatan pencernaan"
+        ],
+        cara: [
+          "Parut kunyit, seduh air hangat",
+          "Bisa dicampur asam jawa"
+        ],
+        warnaIkon: "#fbbf24"
+      },
+      temulawak: {
+        nama: "TEMULAWAK (Curcuma xanthorrhiza)",
+        manfaat: [
+          "Mendukung fungsi hati",
+          "Meningkatkan nafsu makan",
+          "Membantu pencernaan"
+        ],
+        cara: [
+          "Rebus irisan temulawak 10–15 menit",
+          "Minum hangat 1 gelas"
+        ],
+        warnaIkon: "#f97316"
+      },
+      daun_sirih: {
+        nama: "DAUN SIRIH (Piper betle)",
+        manfaat: [
+          "Antiseptik alami",
+          "Membantu mengurangi bau mulut",
+          "Membantu perawatan luka ringan"
+        ],
+        cara: [
+          "Rebus 3–5 lembar daun sirih",
+          "Gunakan airnya setelah hangat"
+        ],
+        warnaIkon: "#22c55e"
+      },
+      lidah_buaya: {
+        nama: "LIDAH BUAYA (Aloe vera)",
+        manfaat: [
+          "Menenangkan iritasi kulit ringan",
+          "Melembapkan kulit",
+          "Mendukung perawatan rambut"
+        ],
+        cara: [
+          "Ambil gel, oles tipis pada kulit",
+          "Untuk rambut: campur dengan sampo"
+        ],
+        warnaIkon: "#06b6d4"
       }
-      .hint b { font-weight: 700; }
-    </style>
-  </head>
+    };
 
-  <body>
-<a-scene
-  embedded
-  vr-mode-ui="enabled: false"
-  renderer="colorManagement: true;"
-  arjs="sourceType: webcam; facingMode: environment; 
-        sourceWidth:1280; sourceHeight:720; 
-        displayWidth:1280; displayHeight:720;
-        debugUIEnabled: false;"
->
-  <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
+    // ==========
+    // RENDER UI
+    // ==========
+    const ui = document.getElementById("ui");
+    const keys = Object.keys(TANAMAN);
 
-    <!-- Panel (tegak) -->
-    <a-plane position="0 0.5 0" rotation="0 0 0" width="1.2" height="0.7" color="#1f2937" opacity="0.85"></a-plane>
+    function buatButton(key) {
+      const b = document.createElement("button");
+      b.className = "btn";
+      b.textContent = TANAMAN[key].nama.split(" ")[0]; // tampil singkat (JAHE/KUNYIT/...)
+      b.onclick = () => pilihTanaman(key);
+      ui.appendChild(b);
+      return b;
+    }
 
-    <!-- Judul -->
-    <a-text
-      value="JAHE (Zingiber officinale)"
-      position="-0.55 0.78 0.02"
-      rotation="0 0 0"
-      width="1.2"
-      color="#ffffff"
-    ></a-text>
+    const btnMap = {};
+    keys.forEach(k => btnMap[k] = buatButton(k));
 
-    <!-- Manfaat -->
-    <a-text
-      value="Manfaat:\n- Menghangatkan tubuh\n- Meredakan mual\n- Membantu masuk angin"
-      position="-0.55 0.62 0.02"
-      rotation="0 0 0"
-      width="1.2"
-      color="#e5e7eb"
-    ></a-text>
+    // ==========
+    // UPDATE AR
+    // ==========
+    const elJudul = document.getElementById("judul");
+    const elManfaat = document.getElementById("manfaat");
+    const elCara = document.getElementById("cara");
+    const elIkon = document.getElementById("ikon");
 
-    <!-- Cara pakai -->
-    <a-text
-      value="Cara pakai:\nSeduh irisan jahe + air panas.\nTambahkan madu (opsional)."
-      position="-0.55 0.42 0.02"
-      rotation="0 0 0"
-      width="1.2"
-      color="#d1d5db"
-    ></a-text>
+    function formatList(label, arr) {
+      return label + ":\n- " + arr.join("\n- ");
+    }
 
-    <!-- Ikon 3D -->
-    <a-cylinder position="0 -0.05 0.05" radius="0.08" height="0.2" color="#f59e0b"></a-cylinder>
+    function pilihTanaman(key) {
+      const t = TANAMAN[key];
 
-  </a-marker>
+      // update teks
+      elJudul.setAttribute("value", t.nama);
+      elManfaat.setAttribute("value", formatList("Manfaat", t.manfaat));
+      elCara.setAttribute("value", formatList("Cara pakai", t.cara));
 
-  <a-entity camera></a-entity>
-</a-scene>
+      // update ikon
+      elIkon.setAttribute("color", t.warnaIkon || "#f59e0b");
 
-    <div class="hint">
-      Arahkan kamera ke <b>marker Hiro</b> (kertas/layar).  
-      Ubah teks tanaman di file <b>index.html</b> untuk tanaman lain.
-    </div>
-  </body>
+      // update tombol aktif
+      Object.values(btnMap).forEach(b => b.classList.remove("active"));
+      btnMap[key].classList.add("active");
+    }
+
+    // Default tampil JAHE
+    pilihTanaman("jahe");
+  </script>
+</body>
 </html>
