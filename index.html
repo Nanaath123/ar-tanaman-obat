@@ -21,53 +21,54 @@
   </head>
 
   <body>
-    <a-scene
-      embedded
-      vr-mode-ui="enabled: false"
-      renderer="colorManagement: true;"
-      arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
-    >
-      <!-- Marker "hiro" bawaan -->
-      <a-marker preset="hiro">
+<a-scene
+  embedded
+  vr-mode-ui="enabled: false"
+  renderer="colorManagement: true;"
+  arjs="sourceType: webcam; facingMode: environment; 
+        sourceWidth:1280; sourceHeight:720; 
+        displayWidth:1280; displayHeight:720;
+        debugUIEnabled: false;"
+>
+  <a-marker preset="hiro" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
 
-        <!-- Panel -->
-        <a-plane position="0 0.8 0" rotation="-90 0 0" width="1.2" height="0.7" color="#1f2937" opacity="0.85"></a-plane>
+    <!-- Panel (tegak) -->
+    <a-plane position="0 0.5 0" rotation="0 0 0" width="1.2" height="0.7" color="#1f2937" opacity="0.85"></a-plane>
 
-        <!-- Judul -->
-        <a-text
-          value="JAHE (Zingiber officinale)"
-          position="-0.55 0.86 0.02"
-          rotation="-90 0 0"
-          width="1.2"
-          color="#ffffff"
-        ></a-text>
+    <!-- Judul -->
+    <a-text
+      value="JAHE (Zingiber officinale)"
+      position="-0.55 0.78 0.02"
+      rotation="0 0 0"
+      width="1.2"
+      color="#ffffff"
+    ></a-text>
 
-        <!-- Manfaat -->
-        <a-text
-          value="Manfaat:\n- Menghangatkan tubuh\n- Meredakan mual\n- Membantu masuk angin"
-          position="-0.55 0.78 0.02"
-          rotation="-90 0 0"
-          width="1.2"
-          color="#e5e7eb"
-        ></a-text>
+    <!-- Manfaat -->
+    <a-text
+      value="Manfaat:\n- Menghangatkan tubuh\n- Meredakan mual\n- Membantu masuk angin"
+      position="-0.55 0.62 0.02"
+      rotation="0 0 0"
+      width="1.2"
+      color="#e5e7eb"
+    ></a-text>
 
-        <!-- Cara pakai -->
-        <a-text
-          value="Cara pakai:\nSeduh irisan jahe + air panas.\nTambahkan madu (opsional)."
-          position="-0.55 0.66 0.02"
-          rotation="-90 0 0"
-          width="1.2"
-          color="#d1d5db"
-        ></a-text>
+    <!-- Cara pakai -->
+    <a-text
+      value="Cara pakai:\nSeduh irisan jahe + air panas.\nTambahkan madu (opsional)."
+      position="-0.55 0.42 0.02"
+      rotation="0 0 0"
+      width="1.2"
+      color="#d1d5db"
+    ></a-text>
 
-        <!-- Ikon sederhana (silinder) biar terasa 3D -->
-        <a-cylinder position="0 0.45 0" radius="0.08" height="0.2" color="#f59e0b" rotation="0 0 0"></a-cylinder>
+    <!-- Ikon 3D -->
+    <a-cylinder position="0 -0.05 0.05" radius="0.08" height="0.2" color="#f59e0b"></a-cylinder>
 
-      </a-marker>
+  </a-marker>
 
-      <!-- Kamera -->
-      <a-entity camera></a-entity>
-    </a-scene>
+  <a-entity camera></a-entity>
+</a-scene>
 
     <div class="hint">
       Arahkan kamera ke <b>marker Hiro</b> (kertas/layar).  
