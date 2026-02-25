@@ -1,50 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AR Tanaman Obat - MindAR</title>
 
+  <!-- A-Frame + MindAR (Image Tracking) -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    body { margin: 0; overflow: hidden; }
+    body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
+    .overlay {
+      position: fixed;
+      left: 12px; right: 12px; bottom: 12px;
+      background: rgba(0,0,0,.6);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 10px;
+      z-index: 9999;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+    .overlay b { color: #ffd54a; }
   </style>
 </head>
 
 <body>
+  <div class="overlay">
+    Jika diminta, pilih <b>Allow Camera</b>. Arahkan kamera ke <b>gambar Jahe</b> yang kamu pakai saat compile (targets.mind).
+    <br/>Jika layar biru terus: cek izin kamera di browser (Site settings → Camera → Allow), lalu refresh.
+  </div>
 
-<a-scene 
-  mindar-image="imageTargetSrc: targets.mind;"
-  color-space="sRGB"
-  renderer="colorManagement: true; physicallyCorrectLights"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false"
->
+  <a-scene
+    mindar-image="imageTargetSrc: targets.mind;"
+    color-space="sRGB"
+    renderer="colorManagement: true; physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: true"
+  >
+    <!-- Kamera (MindAR akan mengontrol video feed) -->
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- targetIndex: 0 = gambar pertama yang kamu compile -->
+    <a-entity mindar-image-target="targetIndex: 0">
 
-  <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Panel -->
+      <a-plane
+        position="0 0 0"
+        width="1.6"
+        height="0.9"
+        color="#111"
+        opacity="0.8">
+      </a-plane>
 
-    <a-plane 
-      position="0 0 0"
-      width="1.5"
-      height="0.8"
-      color="#111"
-      opacity="0.8">
-    </a-plane>
+      <!-- Teks Manfaat -->
+      <a-text
+        value="JAHE (Zingiber officinale)\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Meredakan batuk/pilek\n- Antioksidan & anti-inflamasi"
+        align="center"
+        color="#FFD54A"
+        width="1.5"
+        position="0 0 0.01">
+      </a-text>
 
-    <a-text
-      value="JAHE (Zingiber officinale)\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti-inflamasi\n- Meningkatkan daya tahan tubuh"
-      align="center"
-      color="yellow"
-      width="1.4"
-      position="0 0 0.01">
-    </a-text>
-
-  </a-entity>
-
-</a-scene>
-
+    </a-entity>
+  </a-scene>
 </body>
 </html>
