@@ -1,119 +1,26 @@
-<!DOCTYPE html>
-<html lang="id">
+<!doctype html>
+<html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AR Tanaman Obat</title>
+  <title>AR Jahe</title>
 
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
-
-  <style>
-    body { margin:0; overflow:hidden; font-family: system-ui, Arial; }
-    .status {
-      position: fixed; left: 12px; right: 12px; top: 12px;
-      background: rgba(0,0,0,.7); color: #fff;
-      padding: 10px 12px; border-radius: 12px;
-      z-index: 9999; font-size: 14px;
-    }
-    .hint {
-      position: fixed; left: 12px; right: 12px; bottom: 12px;
-      background: rgba(0,0,0,.55); color: #fff;
-      padding: 10px 12px; border-radius: 12px;
-      z-index: 9999; font-size: 14px; line-height: 1.35;
-    }
-  </style>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.7/aframe/build/aframe-ar.js"></script>
 </head>
-
-<body>
-  <div class="status" id="status">Memuat kamera...</div>
-
+<body style="margin:0; overflow:hidden;">
   <a-scene
-    embedded
     vr-mode-ui="enabled:false"
     renderer="colorManagement:true;"
     arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
   >
-    <!-- ===================== -->
-    <!-- TES 1: HIRO (WAJIB MUNCUL BOX MERAH) -->
-    <!-- ===================== -->
-    <a-marker preset="hiro" id="m-hiro">
-      <a-box position="0 0.5 0" color="red"></a-box>
-    </a-marker>
 
-    <!-- ===================== -->
-    <!-- TES 2: PATTERN (SCAN MARKER BORDER HITAM HASIL GENERATOR) -->
-    <!-- ===================== -->
-    <!-- GANTI username/repo jika beda -->
-    <a-marker type="pattern"
-      url="https://nanaath123.github.io/ar-tanaman-obat/pattern-jahe.patt"
-      id="m-jahe">
-      <a-plane position="0 0.55 0" width="1.3" height="0.9" color="#111827" opacity="0.88"></a-plane>
-      <a-text value="JAHE\n- Menghangatkan tubuh\n- Meredakan mual\n- Masuk angin"
-        position="-0.62 0.92 0.02" width="1.3" color="#ffffff"></a-text>
-    </a-marker>
-
-    <a-marker type="pattern"
-      url="https://nanaath123.github.io/ar-tanaman-obat/pattern-kunyit.patt"
-      id="m-kunyit">
-      <a-plane position="0 0.55 0" width="1.3" height="0.9" color="#111827" opacity="0.88"></a-plane>
-      <a-text value="KUNYIT\n- Antiinflamasi\n- Nyeri haid\n- Pencernaan"
-        position="-0.62 0.92 0.02" width="1.3" color="#ffffff"></a-text>
-    </a-marker>
-
-    <a-marker type="pattern"
-      url="https://nanaath123.github.io/ar-tanaman-obat/pattern-temulawak.patt"
-      id="m-temulawak">
-      <a-plane position="0 0.55 0" width="1.3" height="0.9" color="#111827" opacity="0.88"></a-plane>
-      <a-text value="TEMULAWAK\n- Dukung hati\n- Nafsu makan\n- Pencernaan"
-        position="-0.62 0.92 0.02" width="1.3" color="#ffffff"></a-text>
-    </a-marker>
-
-    <a-marker type="pattern"
-      url="https://nanaath123.github.io/ar-tanaman-obat/pattern-daun-sirih.patt"
-      id="m-daun-sirih">
-      <a-plane position="0 0.55 0" width="1.3" height="0.9" color="#111827" opacity="0.88"></a-plane>
-      <a-text value="DAUN SIRIH\n- Antiseptik\n- Bau mulut\n- Luka ringan"
-        position="-0.62 0.92 0.02" width="1.3" color="#ffffff"></a-text>
-    </a-marker>
-
-    <a-marker type="pattern"
-      url="https://nanaath123.github.io/ar-tanaman-obat/pattern-lidah-buaya.patt"
-      id="m-lidah-buaya">
-      <a-plane position="0 0.55 0" width="1.3" height="0.9" color="#111827" opacity="0.88"></a-plane>
-      <a-text value="LIDAH BUAYA\n- Iritasi kulit\n- Melembapkan\n- Rambut"
-        position="-0.62 0.92 0.02" width="1.3" color="#ffffff"></a-text>
+    <!-- Marker JAHE -->
+    <a-marker type="pattern" url="./pattern-jahe-photoaidcom-greyscale.patt">
+      <a-box position="0 0.5 0" color="orange"></a-box>
     </a-marker>
 
     <a-entity camera></a-entity>
   </a-scene>
-
-  <div class="hint">
-    1) Scan <b>HIRO</b> dulu → kalau box merah tidak muncul, berarti kamera/marker belum kebaca.<br/>
-    2) Untuk pattern: scan <b>marker border hitam</b> hasil generator (bukan foto polos).<br/>
-    3) Pastikan link .patt bisa dibuka (tidak 404).
-  </div>
-
-  <script>
-    const status = document.getElementById("status");
-    const map = [
-      ["m-hiro", "✅ HIRO terdeteksi"],
-      ["m-jahe", "✅ PATTERN JAHE terdeteksi"],
-      ["m-kunyit", "✅ PATTERN KUNYIT terdeteksi"],
-      ["m-temulawak", "✅ PATTERN TEMULAWAK terdeteksi"],
-      ["m-daun-sirih", "✅ PATTERN DAUN SIRIH terdeteksi"],
-      ["m-lidah-buaya", "✅ PATTERN LIDAH BUAYA terdeteksi"],
-    ];
-
-    window.addEventListener("load", () => {
-      status.textContent = "Arahkan kamera ke marker...";
-      map.forEach(([id, msg]) => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.addEventListener("markerFound", () => status.textContent = msg);
-        el.addEventListener("markerLost", () => status.textContent = "Marker hilang, coba dekatkan lagi...");
-      });
-    });
-  </script>
 </body>
 </html>
