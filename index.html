@@ -10,7 +10,6 @@
 
   <style>
     body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
-
     .overlay {
       position: fixed;
       left: 12px; right: 12px; bottom: 12px;
@@ -23,170 +22,92 @@
       line-height: 1.35;
     }
     .overlay b { color: #ffd54a; }
-
-    .menu {
-      position: fixed;
-      left: 12px; right: 12px; top: 12px;
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      z-index: 9999;
-    }
-    .btn {
-      border: 0;
-      padding: 8px 10px;
-      border-radius: 10px;
-      background: rgba(0,0,0,.6);
-      color: #fff;
-      font-size: 13px;
-    }
-    .btn.active { background: rgba(255, 213, 74, .9); color: #111; font-weight: 700; }
   </style>
 </head>
 
 <body>
-  <!-- MENU PILIH TANAMAN -->
-  <div class="menu" id="menu">
-    <button class="btn active" data-key="jahe">Jahe</button>
-    <button class="btn" data-key="kunyit">Kunyit</button>
-    <button class="btn" data-key="lengkuas">Lengkuas</button>
-    <button class="btn" data-key="lidahbuaya">Lidah Buaya</button>
-    <button class="btn" data-key="daunsirih">Daun Sirih</button>
-  </div>
 
-  <!-- PETUNJUK -->
   <div class="overlay">
     Jika diminta, pilih <b>Allow Camera</b>.
-    Pilih tanaman di atas, lalu arahkan kamera ke <b>gambar tanaman</b> yang kamu compile menjadi file <b>.mind</b>.
-    <br/>Jika tidak muncul: cek izin kamera (Site settings → Camera → Allow), lalu refresh.
+    Arahkan kamera ke <b>gambar tanaman</b> yang kamu compile (targets.mind).
   </div>
 
   <a-scene
-    id="scene"
-    mindar-image="imageTargetSrc: targets-jahe.mind;"
+    mindar-image="imageTargetSrc: targets.mind;"
     color-space="sRGB"
     renderer="colorManagement: true; physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: true"
   >
+
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- ANCHOR (targetIndex 0 karena tiap .mind kamu 1 gambar) -->
-    <a-entity id="anchor" mindar-image-target="targetIndex: 0">
-      <a-plane
-        position="0 0 0"
-        width="1.6"
-        height="0.9"
-        color="#111"
-        opacity="0.8">
-      </a-plane>
-
+    <!-- ================= TARGET 0 ================= -->
+    <!-- Image 1 = LENGKUAS -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-plane position="0 0 0" width="1.6" height="0.9" color="#111" opacity="0.8"></a-plane>
       <a-text
-        id="infoText"
-        value=""
+        value="LENGKUAS (Alpinia galanga)\n\nManfaat:\n- Menghangatkan tubuh\n- Membantu meredakan mual\n- Antimikroba tradisional"
         align="center"
         color="#FFD54A"
         width="1.5"
         position="0 0 0.01">
       </a-text>
     </a-entity>
+
+    <!-- ================= TARGET 1 ================= -->
+    <!-- Image 2 = LIDAH BUAYA -->
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-plane position="0 0 0" width="1.6" height="0.9" color="#111" opacity="0.8"></a-plane>
+      <a-text
+        value="LIDAH BUAYA (Aloe vera)\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Mendukung kesehatan pencernaan"
+        align="center"
+        color="#FFD54A"
+        width="1.5"
+        position="0 0 0.01">
+      </a-text>
+    </a-entity>
+
+    <!-- ================= TARGET 2 ================= -->
+    <!-- Image 3 = JAHE -->
+    <a-entity mindar-image-target="targetIndex: 2">
+      <a-plane position="0 0 0" width="1.6" height="0.9" color="#111" opacity="0.8"></a-plane>
+      <a-text
+        value="JAHE (Zingiber officinale)\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Meredakan batuk/pilek\n- Antioksidan & anti-inflamasi"
+        align="center"
+        color="#FFD54A"
+        width="1.5"
+        position="0 0 0.01">
+      </a-text>
+    </a-entity>
+
+    <!-- ================= TARGET 3 ================= -->
+    <!-- Image 4 = KUNYIT -->
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-plane position="0 0 0" width="1.6" height="0.9" color="#111" opacity="0.8"></a-plane>
+      <a-text
+        value="KUNYIT (Curcuma longa)\n\nManfaat:\n- Anti-inflamasi (kurkumin)\n- Membantu pencernaan\n- Mendukung daya tahan tubuh"
+        align="center"
+        color="#FFD54A"
+        width="1.5"
+        position="0 0 0.01">
+      </a-text>
+    </a-entity>
+
+    <!-- ================= TARGET 4 ================= -->
+    <!-- Image 5 = DAUN SIRIH -->
+    <a-entity mindar-image-target="targetIndex: 4">
+      <a-plane position="0 0 0" width="1.6" height="0.9" color="#111" opacity="0.8"></a-plane>
+      <a-text
+        value="DAUN SIRIH (Piper betle)\n\nManfaat:\n- Antiseptik tradisional\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
+        align="center"
+        color="#FFD54A"
+        width="1.5"
+        position="0 0 0.01">
+      </a-text>
+    </a-entity>
+
   </a-scene>
 
-  <script>
-    // DATA TANAMAN: file .mind + teks manfaat
-    const PLANTS = {
-      jahe: {
-        mind: "targets-jahe.mind",
-        text:
-`JAHE (Zingiber officinale)
-
-Manfaat:
-- Menghangatkan tubuh
-- Mengurangi mual
-- Meredakan batuk/pilek
-- Antioksidan & anti-inflamasi`
-      },
-      kunyit: {
-        mind: "targets-kunyit.mind",
-        text:
-`KUNYIT (Curcuma longa)
-
-Manfaat:
-- Membantu pencernaan
-- Anti-inflamasi (kurkumin)
-- Mendukung daya tahan tubuh`
-      },
-      lengkuas: {
-        mind: "targets-lengkuas.mind",
-        text:
-`LENGKUAS (Alpinia galanga)
-
-Manfaat:
-- Membantu meredakan mual
-- Antimikroba (tradisional)
-- Menghangatkan tubuh`
-      },
-      lidahbuaya: {
-        mind: "targets-lidahbuaya.mind",
-        text:
-`LIDAH BUAYA (Aloe vera)
-
-Manfaat:
-- Menenangkan iritasi kulit
-- Membantu melembapkan kulit
-- Mendukung kesehatan pencernaan (olahannya)`
-      },
-      daunsirih: {
-        mind: "targets-daunsirih.mind",
-        text:
-`DAUN SIRIH (Piper betle)
-
-Manfaat:
-- Antiseptik tradisional
-- Membantu menjaga kebersihan mulut
-- Membantu mengurangi bau badan (tradisional)`
-      }
-    };
-
-    const sceneEl = document.querySelector("#scene");
-    const infoText = document.querySelector("#infoText");
-    const menu = document.querySelector("#menu");
-
-    // set default text
-    infoText.setAttribute("value", PLANTS.jahe.text);
-
-    async function switchPlant(key) {
-      const plant = PLANTS[key];
-      if (!plant) return;
-
-      // update text
-      infoText.setAttribute("value", plant.text);
-
-      // stop MindAR system, ganti file .mind, lalu start lagi
-      const system = sceneEl.systems["mindar-image-system"];
-      if (system) {
-        await system.stop();
-      }
-
-      sceneEl.setAttribute("mindar-image", `imageTargetSrc: ${plant.mind};`);
-
-      // tunggu 1 tick supaya attribute kebaca
-      setTimeout(async () => {
-        const sys2 = sceneEl.systems["mindar-image-system"];
-        if (sys2) await sys2.start();
-      }, 100);
-    }
-
-    menu.addEventListener("click", (e) => {
-      const btn = e.target.closest("button[data-key]");
-      if (!btn) return;
-
-      // UI active state
-      document.querySelectorAll(".btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-
-      switchPlant(btn.dataset.key);
-    });
-  </script>
 </body>
 </html>
