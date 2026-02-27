@@ -12,26 +12,29 @@
     html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
     a-scene { position:fixed !important; inset:0 !important; width:100% !important; height:100% !important; }
 
+    #overlay{
+      position:fixed; inset:0; z-index:9999;
+      display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.82); color:#fff;
+      font:14px/1.4 system-ui, Arial; text-align:center; padding:20px;
+    }
+    #overlay .box{ max-width:360px; width:100%; }
+    #overlay button{
+      margin-top:14px; width:100%;
+      padding:12px 14px; border:0; border-radius:12px; font-weight:700;
+    }
+    #status{ margin-top:10px; opacity:.9; white-space:pre-line; }
+
     .hint{
       position:fixed; left:10px; right:10px; bottom:10px;
       background:rgba(0,0,0,.60); color:#fff;
-      padding:8px 10px; border-radius:10px; z-index:9999;
+      padding:8px 10px; border-radius:10px; z-index:5;
       font:13px/1.35 system-ui, Arial; text-align:center;
     }
-
-    #startBtn{
-      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.75); z-index:10000;
-      font:16px system-ui, Arial; color:#fff; text-align:center; padding:20px;
-    }
-    #startBtn button{
-      padding:12px 16px; border:0; border-radius:12px; font-weight:600;
-    }
-    #msg{ margin-top:12px; font-size:13px; opacity:.9; }
   </style>
 
   <script>
-    // Autofit biar model yang pivot/ukuran beda tetap kelihatan
+    // Autofit biar pivot/ukuran GLB beda-beda tetap kelihatan
     AFRAME.registerComponent("autofit", {
       schema: { size: { type: "number", default: 0.7 } },
       init: function () {
@@ -57,23 +60,22 @@
 </head>
 
 <body>
-  <div id="startBtn">
-    <div>
-      <div style="font-size:18px; font-weight:700;">AR Tanaman Obat</div>
-      <div id="msg">Klik tombol untuk menyalakan kamera (wajib izin kamera).</div>
-      <div style="margin-top:14px;">
-        <button id="btn">Mulai Kamera</button>
-      </div>
+  <div id="overlay">
+    <div class="box">
+      <div style="font-size:18px; font-weight:800;">AR Tanaman Obat</div>
+      <div id="status">Klik “Mulai Kamera”.\nPASTIKAN buka di Chrome (bukan browser dalam aplikasi).</div>
+      <button id="btn">Mulai Kamera</button>
     </div>
   </div>
 
   <div class="hint">Allow Camera → arahkan ke gambar target</div>
 
   <a-scene
+    embedded
     mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;"
-    renderer="colorManagement:true; physicallyCorrectLights:true"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
+    renderer="colorManagement:true; physicallyCorrectLights:true"
     color-space="sRGB"
   >
     <a-assets timeout="60000">
@@ -83,8 +85,9 @@
       <a-asset-item id="m-sirih"  src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- PENTING: pakai mindar-image-camera di ENTITY -->
+    <!-- PENTING: mindar-image-camera di ENTITY -->
     <a-entity
+      id="cam"
       mindar-image-camera="enabled: true"
       camera="near:0.01; far:1000"
       look-controls="enabled:false"
@@ -94,28 +97,24 @@
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-    <!-- Target 0 -->
     <a-entity mindar-image-target="targetIndex: 0">
       <a-entity position="0 0.15 0">
         <a-gltf-model src="#m-lidah" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- Target 1 -->
     <a-entity mindar-image-target="targetIndex: 1">
       <a-entity position="0 0.15 0">
         <a-gltf-model src="#m-jahe" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- Target 2 -->
     <a-entity mindar-image-target="targetIndex: 2">
       <a-entity position="0 0.15 0">
         <a-gltf-model src="#m-kunyit" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- Target 3 -->
     <a-entity mindar-image-target="targetIndex: 3">
       <a-entity position="0 0.15 0">
         <a-gltf-model src="#m-sirih" autofit="size:0.75"></a-gltf-model>
@@ -124,28 +123,47 @@
   </a-scene>
 
   <script>
+    const overlay = document.getElementById("overlay");
+    const statusEl = document.getElementById("status");
     const btn = document.getElementById("btn");
-    const startOverlay = document.getElementById("startBtn");
-    const msg = document.getElementById("msg");
     const sceneEl = document.querySelector("a-scene");
+
+    // tangkap error mindar
+    sceneEl.addEventListener("arError", (e) => {
+      console.log("arError:", e);
+      statusEl.textContent = "❌ MindAR error.\nCoba buka di Chrome murni dan pastikan izin kamera ALLOW.";
+      overlay.style.display = "flex";
+    });
+
+    async function testCameraOnce() {
+      // Test kamera REAR dulu supaya kalau gagal kita dapat error jelas
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: "environment" } },
+        audio: false
+      });
+      // stop lagi (cuma tes)
+      stream.getTracks().forEach(t => t.stop());
+    }
 
     btn.addEventListener("click", async () => {
       try {
-        // start AR setelah user klik (anti diblokir autoplay)
-        await sceneEl.systems["mindar-image-system"].start();
-        startOverlay.style.display = "none";
-      } catch (e) {
-        console.log(e);
-        msg.textContent =
-          "Gagal menyalakan kamera. Cek izin kamera di Chrome (Site settings → Camera → Allow), lalu refresh.";
-      }
-    });
+        statusEl.textContent = "Menguji kamera…";
+        await testCameraOnce();
 
-    // stop saat pindah tab biar stabil
-    document.addEventListener("visibilitychange", () => {
-      const sys = sceneEl.systems["mindar-image-system"];
-      if (!sys) return;
-      if (document.hidden) sys.stop();
+        statusEl.textContent = "Menyalakan AR…";
+        await sceneEl.systems["mindar-image-system"].start();
+
+        overlay.style.display = "none";
+      } catch (err) {
+        console.log(err);
+        statusEl.textContent =
+          "❌ Kamera gagal menyala.\n" +
+          "Penyebab paling sering:\n" +
+          "1) Dibuka dari browser dalam aplikasi (WA/IG) → buka di Chrome\n" +
+          "2) Izin kamera ditolak → Site settings → Camera → Allow\n\n" +
+          "Error: " + (err?.name || err);
+        overlay.style.display = "flex";
+      }
     });
   </script>
 </body>
