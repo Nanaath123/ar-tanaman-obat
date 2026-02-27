@@ -9,32 +9,53 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
-    a-scene { position:fixed !important; inset:0 !important; width:100% !important; height:100% !important; }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+      font-family: system-ui, Arial;
+    }
 
-    #overlay{
-      position:fixed; inset:0; z-index:9999;
-      display:flex; align-items:center; justify-content:center;
-      background:rgba(0,0,0,.82); color:#fff;
-      font:14px/1.4 system-ui, Arial; text-align:center; padding:20px;
+    /* Pastikan video MindAR ada dan kelihatan */
+    video#mindar-video {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      object-fit: cover !important;
+      z-index: 0 !important;
     }
-    #overlay .box{ max-width:360px; width:100%; }
-    #overlay button{
-      margin-top:14px; width:100%;
-      padding:12px 14px; border:0; border-radius:12px; font-weight:700;
+
+    /* Canvas A-Frame di atas video */
+    a-scene {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 1 !important;
     }
-    #status{ margin-top:10px; opacity:.9; white-space:pre-line; }
+
+    #hud{
+      position: fixed; left: 10px; right: 10px; top: 10px;
+      background: rgba(0,0,0,.72); color: #fff;
+      padding: 10px 12px; border-radius: 12px;
+      z-index: 9999;
+      font-size: 13px; line-height: 1.35;
+      white-space: pre-line;
+    }
 
     .hint{
-      position:fixed; left:10px; right:10px; bottom:10px;
-      background:rgba(0,0,0,.60); color:#fff;
-      padding:8px 10px; border-radius:10px; z-index:5;
-      font:13px/1.35 system-ui, Arial; text-align:center;
+      position: fixed; left: 10px; right: 10px; bottom: 10px;
+      background: rgba(0,0,0,.60); color: #fff;
+      padding: 8px 10px; border-radius: 10px;
+      z-index: 9999;
+      font-size: 13px; text-align: center;
     }
   </style>
 
   <script>
-    // Autofit biar pivot/ukuran GLB beda-beda tetap kelihatan
+    // Autofit: center + scale GLB
     AFRAME.registerComponent("autofit", {
       schema: { size: { type: "number", default: 0.7 } },
       init: function () {
@@ -60,22 +81,15 @@
 </head>
 
 <body>
-  <div id="overlay">
-    <div class="box">
-      <div style="font-size:18px; font-weight:800;">AR Tanaman Obat</div>
-      <div id="status">Klik “Mulai Kamera”.\nPASTIKAN buka di Chrome (bukan browser dalam aplikasi).</div>
-      <button id="btn">Mulai Kamera</button>
-    </div>
-  </div>
-
+  <div id="hud">Loading…\nJika layar hitam: cek izin webcam (Chrome → ikon kamera di address bar).</div>
   <div class="hint">Allow Camera → arahkan ke gambar target</div>
 
   <a-scene
-    embedded
-    mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;"
+    mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
-    renderer="colorManagement:true; physicallyCorrectLights:true"
+    renderer="alpha:true; antialias:true; colorManagement:true; physicallyCorrectLights:true"
+    background="transparent: true"
     color-space="sRGB"
   >
     <a-assets timeout="60000">
@@ -85,9 +99,8 @@
       <a-asset-item id="m-sirih"  src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- PENTING: mindar-image-camera di ENTITY -->
+    <!-- CAMERA (mindar) -->
     <a-entity
-      id="cam"
       mindar-image-camera="enabled: true"
       camera="near:0.01; far:1000"
       look-controls="enabled:false"
@@ -97,73 +110,52 @@
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
+    <!-- Target 0 -->
     <a-entity mindar-image-target="targetIndex: 0">
       <a-entity position="0 0.15 0">
-        <a-gltf-model src="#m-lidah" autofit="size:0.75"></a-gltf-model>
+        <a-gltf-model src="#m-lidah"  autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
+    <!-- Target 1 -->
     <a-entity mindar-image-target="targetIndex: 1">
       <a-entity position="0 0.15 0">
-        <a-gltf-model src="#m-jahe" autofit="size:0.75"></a-gltf-model>
+        <a-gltf-model src="#m-jahe"   autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
+    <!-- Target 2 -->
     <a-entity mindar-image-target="targetIndex: 2">
       <a-entity position="0 0.15 0">
         <a-gltf-model src="#m-kunyit" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
+    <!-- Target 3 -->
     <a-entity mindar-image-target="targetIndex: 3">
       <a-entity position="0 0.15 0">
-        <a-gltf-model src="#m-sirih" autofit="size:0.75"></a-gltf-model>
+        <a-gltf-model src="#m-sirih"  autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
   </a-scene>
 
   <script>
-    const overlay = document.getElementById("overlay");
-    const statusEl = document.getElementById("status");
-    const btn = document.getElementById("btn");
-    const sceneEl = document.querySelector("a-scene");
+    const hud = document.getElementById("hud");
 
-    // tangkap error mindar
-    sceneEl.addEventListener("arError", (e) => {
+    // Info kamera/video (biar ketahuan dia kebuka atau tidak)
+    const checkVideo = setInterval(() => {
+      const v = document.querySelector("video#mindar-video");
+      if (!v) return;
+      const w = v.videoWidth || 0;
+      const h = v.videoHeight || 0;
+      hud.textContent = `Video: ${w}x${h}\nJika 0x0: webcam belum jalan / izin diblok.`;
+      if (w > 0 && h > 0) clearInterval(checkVideo);
+    }, 700);
+
+    // Tangkap error MindAR
+    document.querySelector("a-scene").addEventListener("arError", (e) => {
       console.log("arError:", e);
-      statusEl.textContent = "❌ MindAR error.\nCoba buka di Chrome murni dan pastikan izin kamera ALLOW.";
-      overlay.style.display = "flex";
-    });
-
-    async function testCameraOnce() {
-      // Test kamera REAR dulu supaya kalau gagal kita dapat error jelas
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: "environment" } },
-        audio: false
-      });
-      // stop lagi (cuma tes)
-      stream.getTracks().forEach(t => t.stop());
-    }
-
-    btn.addEventListener("click", async () => {
-      try {
-        statusEl.textContent = "Menguji kamera…";
-        await testCameraOnce();
-
-        statusEl.textContent = "Menyalakan AR…";
-        await sceneEl.systems["mindar-image-system"].start();
-
-        overlay.style.display = "none";
-      } catch (err) {
-        console.log(err);
-        statusEl.textContent =
-          "❌ Kamera gagal menyala.\n" +
-          "Penyebab paling sering:\n" +
-          "1) Dibuka dari browser dalam aplikasi (WA/IG) → buka di Chrome\n" +
-          "2) Izin kamera ditolak → Site settings → Camera → Allow\n\n" +
-          "Error: " + (err?.name || err);
-        overlay.style.display = "flex";
-      }
+      hud.textContent = "❌ arError. Buka DevTools console untuk detail.";
     });
   </script>
 </body>
