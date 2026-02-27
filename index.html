@@ -7,97 +7,117 @@
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
+    #status {
+      position: fixed; left: 10px; top: 10px; right: 10px;
+      background: rgba(0,0,0,.6); color: #fff;
+      padding: 8px 10px; border-radius: 10px; z-index: 9999;
+      font-size: 13px;
+    }
+  </style>
 </head>
 
 <body>
+<div id="status">Loading model...</div>
 
 <a-scene
   mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
+  color-space="sRGB"
+  renderer="colorManagement: true; physicallyCorrectLights: true"
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: true"
 >
 
-<a-assets>
-  <a-asset-item id="lidah" src="lidah-buaya.glb"></a-asset-item>
-  <a-asset-item id="jahe" src="jahe.glb"></a-asset-item>
-  <a-asset-item id="kunyit" src="kunyit.glb"></a-asset-item>
-  <a-asset-item id="sirih" src="daunsirih.glb"></a-asset-item>
-</a-assets>
+  <a-assets timeout="20000">
+    <a-asset-item id="lidah" src="lidah-buaya.glb"></a-asset-item>
+    <a-asset-item id="jahe" src="jahe.glb"></a-asset-item>
+    <a-asset-item id="kunyit" src="kunyit.glb"></a-asset-item>
+    <a-asset-item id="sirih" src="daunsirih.glb"></a-asset-item>
+  </a-assets>
 
-<a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-<a-entity light="type: ambient; intensity: 1"></a-entity>
-<a-entity light="type: directional; intensity: 1" position="1 2 1"></a-entity>
+  <a-entity light="type: ambient; intensity: 1.2"></a-entity>
+  <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-<!-- ================= TARGET 0 ================= -->
-<!-- LIDAH BUAYA -->
-<a-entity mindar-image-target="targetIndex: 0">
-  <a-gltf-model src="#lidah"
-    position="0 0 0.1"
-    scale="0.4 0.4 0.4">
-  </a-gltf-model>
+  <!-- TARGET 0: LIDAH BUAYA -->
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-gltf-model class="mdl" src="#lidah"
+      position="0 0 0.2"
+      rotation="0 0 0"
+      scale="1 1 1">
+    </a-gltf-model>
 
-  <a-text
-    value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Baik untuk pencernaan"
-    align="center"
-    color="yellow"
-    width="1.6"
-    position="0 -0.6 0">
-  </a-text>
-</a-entity>
+    <a-text value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Baik untuk pencernaan"
+      align="center" color="yellow" width="1.6" position="0 -0.6 0">
+    </a-text>
+  </a-entity>
 
-<!-- ================= TARGET 1 ================= -->
-<!-- JAHE -->
-<a-entity mindar-image-target="targetIndex: 1">
-  <a-gltf-model src="#jahe"
-    position="0 0 0.1"
-    scale="0.4 0.4 0.4">
-  </a-gltf-model>
+  <!-- TARGET 1: JAHE -->
+  <a-entity mindar-image-target="targetIndex: 1">
+    <a-gltf-model class="mdl" src="#jahe"
+      position="0 0 0.2"
+      rotation="0 0 0"
+      scale="1 1 1">
+    </a-gltf-model>
 
-  <a-text
-    value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"
-    align="center"
-    color="yellow"
-    width="1.6"
-    position="0 -0.6 0">
-  </a-text>
-</a-entity>
+    <a-text value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"
+      align="center" color="yellow" width="1.6" position="0 -0.6 0">
+    </a-text>
+  </a-entity>
 
-<!-- ================= TARGET 2 ================= -->
-<!-- KUNYIT -->
-<a-entity mindar-image-target="targetIndex: 2">
-  <a-gltf-model src="#kunyit"
-    position="0 0 0.1"
-    scale="0.4 0.4 0.4">
-  </a-gltf-model>
+  <!-- TARGET 2: KUNYIT -->
+  <a-entity mindar-image-target="targetIndex: 2">
+    <a-gltf-model class="mdl" src="#kunyit"
+      position="0 0 0.2"
+      rotation="0 0 0"
+      scale="1 1 1">
+    </a-gltf-model>
 
-  <a-text
-    value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"
-    align="center"
-    color="yellow"
-    width="1.6"
-    position="0 -0.6 0">
-  </a-text>
-</a-entity>
+    <a-text value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"
+      align="center" color="yellow" width="1.6" position="0 -0.6 0">
+    </a-text>
+  </a-entity>
 
-<!-- ================= TARGET 3 ================= -->
-<!-- DAUN SIRIH -->
-<a-entity mindar-image-target="targetIndex: 3">
-  <a-gltf-model src="#sirih"
-    position="0 0 0.1"
-    scale="0.4 0.4 0.4">
-  </a-gltf-model>
+  <!-- TARGET 3: DAUN SIRIH -->
+  <a-entity mindar-image-target="targetIndex: 3">
+    <a-gltf-model class="mdl" src="#sirih"
+      position="0 0 0.2"
+      rotation="0 0 0"
+      scale="1 1 1">
+    </a-gltf-model>
 
-  <a-text
-    value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
-    align="center"
-    color="yellow"
-    width="1.6"
-    position="0 -0.6 0">
-  </a-text>
-</a-entity>
+    <a-text value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
+      align="center" color="yellow" width="1.6" position="0 -0.6 0">
+    </a-text>
+  </a-entity>
 
 </a-scene>
+
+<script>
+  const status = document.getElementById("status");
+  window.addEventListener("load", () => {
+    const models = document.querySelectorAll(".mdl");
+    let loaded = 0;
+
+    models.forEach((m) => {
+      m.addEventListener("model-loaded", () => {
+        loaded++;
+        status.textContent = `✅ Model loaded (${loaded}/${models.length})`;
+        if (loaded === models.length) {
+          setTimeout(() => status.style.display = "none", 1500);
+        }
+      });
+
+      m.addEventListener("model-error", (e) => {
+        console.log("MODEL ERROR:", e);
+        status.textContent = "❌ GLB gagal load (cek file atau format GLB)";
+      });
+    });
+  });
+</script>
 
 </body>
 </html>
