@@ -1,38 +1,3 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Tanaman Obat</title>
-
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
-  <style>
-    body { margin:0; overflow:hidden; }
-    .hint {
-      position:fixed;
-      bottom:10px;
-      left:10px;
-      right:10px;
-      background:rgba(0,0,0,0.6);
-      color:white;
-      padding:8px;
-      border-radius:10px;
-      text-align:center;
-      font-family:Arial;
-      font-size:14px;
-      z-index:9999;
-    }
-  </style>
-</head>
-
-<body>
-
-<div class="hint">
-  Allow Camera → arahkan ke gambar target
-</div>
-
 <a-scene
   mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
   vr-mode-ui="enabled:false"
@@ -40,59 +5,52 @@
   renderer="colorManagement:true; physicallyCorrectLights:true"
 >
 
-  <a-assets>
-    <a-asset-item id="m-lidah" src="./lidah-buaya.glb"></a-asset-item>
-    <a-asset-item id="m-jahe" src="./jahe.glb"></a-asset-item>
-    <a-asset-item id="m-kunyit" src="./kunyit.glb"></a-asset-item>
-    <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
-  </a-assets>
+<a-assets>
+  <a-asset-item id="m-lidah" src="./lidah-buaya.glb"></a-asset-item>
+  <a-asset-item id="m-jahe" src="./jahe.glb"></a-asset-item>
+  <a-asset-item id="m-kunyit" src="./kunyit.glb"></a-asset-item>
+  <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
+</a-assets>
 
-  <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+<a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
 
-  <a-entity light="type: ambient; intensity: 1.2"></a-entity>
-  <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
+<a-entity light="type: ambient; intensity: 1.2"></a-entity>
+<a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-  <!-- TARGET 0: Lidah Buaya -->
-  <a-entity mindar-image-target="targetIndex: 0">
-    <a-gltf-model 
-      src="#m-lidah"
-      position="0 0 0"
-      rotation="0 0 0"
-      scale="0.5 0.5 0.5">
-    </a-gltf-model>
-  </a-entity>
+<!-- TARGET 0 -->
+<a-entity mindar-image-target="targetIndex: 0">
+  <a-gltf-model src="#m-lidah"
+    position="0 0 -0.5"
+    rotation="0 0 0"
+    scale="0.2 0.2 0.2">
+  </a-gltf-model>
+</a-entity>
 
-  <!-- TARGET 1: Jahe -->
-  <a-entity mindar-image-target="targetIndex: 1">
-    <a-gltf-model 
-      src="#m-jahe"
-      position="0 0 0"
-      rotation="0 0 0"
-      scale="0.5 0.5 0.5">
-    </a-gltf-model>
-  </a-entity>
+<!-- TARGET 1 -->
+<a-entity mindar-image-target="targetIndex: 1">
+  <a-gltf-model src="#m-jahe"
+    position="0 0 -0.5"
+    rotation="0 0 0"
+    scale="0.2 0.2 0.2">
+  </a-gltf-model>
+</a-entity>
 
-  <!-- TARGET 2: Kunyit -->
-  <a-entity mindar-image-target="targetIndex: 2">
-    <a-gltf-model 
-      src="#m-kunyit"
-      position="0 0 0"
-      rotation="0 0 0"
-      scale="0.5 0.5 0.5">
-    </a-gltf-model>
-  </a-entity>
+<!-- TARGET 2 -->
+<a-entity mindar-image-target="targetIndex: 2">
+  <a-gltf-model src="#m-kunyit"
+    position="0 0 -0.5"
+    rotation="0 0 0"
+    scale="0.2 0.2 0.2">
+  </a-gltf-model>
+</a-entity>
 
-  <!-- TARGET 3: Daun Sirih -->
-  <a-entity mindar-image-target="targetIndex: 3">
-    <a-gltf-model 
-      src="#m-sirih"
-      position="0 0 0"
-      rotation="0 0 0"
-      scale="0.5 0.5 0.5">
-    </a-gltf-model>
-  </a-entity>
+<!-- TARGET 3 -->
+<a-entity mindar-image-target="targetIndex: 3">
+  <a-gltf-model src="#m-sirih"
+    position="0 0 -0.5"
+    rotation="0 0 0"
+    scale="0.2 0.2 0.2">
+  </a-gltf-model>
+</a-entity>
 
 </a-scene>
-
-</body>
-</html>
