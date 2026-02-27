@@ -9,45 +9,56 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background:#000; }
+    html, body {
+      margin: 0; padding: 0;
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+    a-scene {
+      position: fixed !important;
+      inset: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      z-index: 1;
+    }
     #hud{
-      position:fixed; left:10px; right:10px; top:10px;
-      background:rgba(0,0,0,.72); color:#fff;
-      padding:10px 12px; border-radius:12px; z-index:9999;
+      position: fixed; left: 10px; right: 10px; top: 10px;
+      background: rgba(0,0,0,.72); color: #fff;
+      padding: 10px 12px; border-radius: 12px;
+      z-index: 9999;
       font: 13px/1.35 system-ui, Arial;
       white-space: pre-line;
     }
     .hint{
-      position:fixed; left:10px; right:10px; bottom:10px;
-      background:rgba(0,0,0,.60); color:#fff;
-      padding:8px 10px; border-radius:10px; z-index:9999;
+      position: fixed; left: 10px; right: 10px; bottom: 10px;
+      background: rgba(0,0,0,.60); color: #fff;
+      padding: 8px 10px; border-radius: 10px;
+      z-index: 9999;
       font: 13px/1.35 system-ui, Arial;
-      text-align:center;
+      text-align: center;
     }
   </style>
 
   <script>
-    // Auto center + auto scale untuk GLB yang pivot / ukurannya beda-beda
+    // Autofit: auto-center + auto-scale biar semua GLB (pivot beda-beda) tetap kelihatan
     AFRAME.registerComponent("autofit", {
-      schema: {
-        size: { type: "number", default: 0.7 } // target ukuran "kira-kira" di atas marker
-      },
+      schema: { size: { type: "number", default: 0.7 } },
       init: function () {
         this.el.addEventListener("model-loaded", () => {
           const mesh = this.el.getObject3D("mesh");
           if (!mesh) return;
 
-          // Bounding box
           const box = new THREE.Box3().setFromObject(mesh);
           const size = new THREE.Vector3();
           const center = new THREE.Vector3();
           box.getSize(size);
           box.getCenter(center);
 
-          // Pusatkan mesh ke origin entity
+          // center ke origin entity
           mesh.position.sub(center);
 
-          // Skala agar max dimension = schema.size
+          // scale supaya muat
           const maxDim = Math.max(size.x, size.y, size.z) || 1;
           const s = this.data.size / maxDim;
           this.el.object3D.scale.set(s, s, s);
@@ -66,17 +77,19 @@
     mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
-    renderer="colorManagement:true; physicallyCorrectLights:true"
+    renderer="colorManagement:true; physicallyCorrectLights:true; alpha:true"
+    background="transparent: true"
     color-space="sRGB"
   >
     <a-assets timeout="60000">
-      <a-asset-item id="m-lidah"  src="./lidah-buaya.glb"></a-asset-item>
-      <a-asset-item id="m-jahe"   src="./jahe.glb"></a-asset-item>
+      <!-- pastikan NAMA FILE persis sama dengan yang di repo -->
+      <a-asset-item id="m-lidah" src="./lidah-buaya.glb"></a-asset-item>
+      <a-asset-item id="m-jahe"  src="./jahe.glb"></a-asset-item>
       <a-asset-item id="m-kunyit" src="./kunyit.glb"></a-asset-item>
-      <a-asset-item id="m-sirih"  src="./daunsirih.glb"></a-asset-item>
+      <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- PENTING: camera harus pakai mindar-image-camera -->
+    <!-- WAJIB: mindar-image-camera (kalau tidak, sering putih/hitam) -->
     <a-camera
       mindar-image-camera="enabled: true"
       position="0 0 0"
@@ -87,45 +100,51 @@
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-    <!-- TARGET 0: Lidah Buaya -->
+    <!-- TARGET 0 -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model class="mdl" data-name="Lidah Buaya"
-        src="#m-lidah"
-        position="0 0 0"
-        rotation="0 0 0"
-        autofit="size:0.75">
-      </a-gltf-model>
+      <!-- parent diposisikan sedikit ke atas agar tidak “nabrak” marker -->
+      <a-entity position="0 0.15 0">
+        <a-gltf-model class="mdl" data-name="Lidah Buaya"
+          src="#m-lidah"
+          rotation="0 0 0"
+          autofit="size: 0.75"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- TARGET 1: Jahe -->
+    <!-- TARGET 1 -->
     <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model class="mdl" data-name="Jahe"
-        src="#m-jahe"
-        position="0 0 0"
-        rotation="0 0 0"
-        autofit="size:0.75">
-      </a-gltf-model>
+      <a-entity position="0 0.15 0">
+        <a-gltf-model class="mdl" data-name="Jahe"
+          src="#m-jahe"
+          rotation="0 0 0"
+          autofit="size: 0.75"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- TARGET 2: Kunyit -->
+    <!-- TARGET 2 -->
     <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model class="mdl" data-name="Kunyit"
-        src="#m-kunyit"
-        position="0 0 0"
-        rotation="0 0 0"
-        autofit="size:0.75">
-      </a-gltf-model>
+      <a-entity position="0 0.15 0">
+        <a-gltf-model class="mdl" data-name="Kunyit"
+          src="#m-kunyit"
+          rotation="0 0 0"
+          autofit="size: 0.75"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- TARGET 3: Daun Sirih -->
+    <!-- TARGET 3 -->
     <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model class="mdl" data-name="Daun Sirih"
-        src="#m-sirih"
-        position="0 0 0"
-        rotation="0 0 0"
-        autofit="size:0.75">
-      </a-gltf-model>
+      <a-entity position="0 0.15 0">
+        <a-gltf-model class="mdl" data-name="Daun Sirih"
+          src="#m-sirih"
+          rotation="0 0 0"
+          autofit="size: 0.75"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
+
   </a-scene>
 
   <script>
