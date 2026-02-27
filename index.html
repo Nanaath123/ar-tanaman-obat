@@ -3,126 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AR Tanaman Obat - MindAR</title>
+  <title>AR Tanaman Obat</title>
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
-  <style>
-    body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
-    .overlay {
-      position: fixed;
-      left: 12px; right: 12px; bottom: 12px;
-      background: rgba(0,0,0,.6);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 10px;
-      z-index: 9999;
-      font-size: 14px;
-      line-height: 1.35;
-    }
-    .overlay b { color: #ffd54a; }
-  </style>
 </head>
 
 <body>
-  <div class="overlay">
-    Pilih <b>Allow Camera</b>. Arahkan kamera ke gambar tanaman.
-  </div>
 
-  <a-scene
-    mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
-    color-space="sRGB"
-    renderer="colorManagement: true; physicallyCorrectLights: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: true"
-  >
+<a-scene
+  mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: true"
+>
 
-    <a-assets timeout="10000">
-      <a-asset-item id="model-lidah" src="lidah-buaya.glb"></a-asset-item>
-      <a-asset-item id="model-jahe" src="jahe.glb"></a-asset-item>
-      <a-asset-item id="model-kunyit" src="kunyit.glb"></a-asset-item>
-      <a-asset-item id="model-sirih" src="daunsirih.glb"></a-asset-item>
-    </a-assets>
+<a-assets>
+  <a-asset-item id="lidah" src="lidah-buaya.glb"></a-asset-item>
+  <a-asset-item id="jahe" src="jahe.glb"></a-asset-item>
+  <a-asset-item id="kunyit" src="kunyit.glb"></a-asset-item>
+  <a-asset-item id="sirih" src="daunsirih.glb"></a-asset-item>
+</a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+<a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Lighting -->
-    <a-entity light="type: ambient; intensity: 0.9"></a-entity>
-    <a-entity light="type: directional; intensity: 0.9" position="1 2 1"></a-entity>
+<a-entity light="type: ambient; intensity: 1"></a-entity>
+<a-entity light="type: directional; intensity: 1" position="1 2 1"></a-entity>
 
-    <!-- ================= TARGET 0 ================= -->
-    <!-- LIDAH BUAYA -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model src="#model-lidah"
-        position="0 0 0.05"
-        scale="0.35 0.35 0.35">
-      </a-gltf-model>
+<!-- ================= TARGET 0 ================= -->
+<!-- LIDAH BUAYA -->
+<a-entity mindar-image-target="targetIndex: 0">
+  <a-gltf-model src="#lidah"
+    position="0 0 0.1"
+    scale="0.4 0.4 0.4">
+  </a-gltf-model>
 
-      <a-plane position="0 -0.55 0" width="1.7" height="0.9" color="#111" opacity="0.8"></a-plane>
-      <a-text
-        value="LIDAH BUAYA (Aloe vera)\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Mendukung kesehatan pencernaan"
-        align="center"
-        color="#FFD54A"
-        width="1.6"
-        position="0 -0.55 0.01">
-      </a-text>
-    </a-entity>
+  <a-text
+    value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Baik untuk pencernaan"
+    align="center"
+    color="yellow"
+    width="1.6"
+    position="0 -0.6 0">
+  </a-text>
+</a-entity>
 
-    <!-- ================= TARGET 1 ================= -->
-    <!-- JAHE -->
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model src="#model-jahe"
-        position="0 0 0.05"
-        scale="0.35 0.35 0.35">
-      </a-gltf-model>
+<!-- ================= TARGET 1 ================= -->
+<!-- JAHE -->
+<a-entity mindar-image-target="targetIndex: 1">
+  <a-gltf-model src="#jahe"
+    position="0 0 0.1"
+    scale="0.4 0.4 0.4">
+  </a-gltf-model>
 
-      <a-plane position="0 -0.55 0" width="1.7" height="0.95" color="#111" opacity="0.8"></a-plane>
-      <a-text
-        value="JAHE (Zingiber officinale)\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Meredakan batuk/pilek\n- Antioksidan & anti-inflamasi"
-        align="center"
-        color="#FFD54A"
-        width="1.6"
-        position="0 -0.55 0.01">
-      </a-text>
-    </a-entity>
+  <a-text
+    value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"
+    align="center"
+    color="yellow"
+    width="1.6"
+    position="0 -0.6 0">
+  </a-text>
+</a-entity>
 
-    <!-- ================= TARGET 2 ================= -->
-    <!-- KUNYIT -->
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model src="#model-kunyit"
-        position="0 0 0.05"
-        scale="0.35 0.35 0.35">
-      </a-gltf-model>
+<!-- ================= TARGET 2 ================= -->
+<!-- KUNYIT -->
+<a-entity mindar-image-target="targetIndex: 2">
+  <a-gltf-model src="#kunyit"
+    position="0 0 0.1"
+    scale="0.4 0.4 0.4">
+  </a-gltf-model>
 
-      <a-plane position="0 -0.55 0" width="1.7" height="0.9" color="#111" opacity="0.8"></a-plane>
-      <a-text
-        value="KUNYIT (Curcuma longa)\n\nManfaat:\n- Anti-inflamasi (kurkumin)\n- Membantu pencernaan\n- Mendukung daya tahan tubuh"
-        align="center"
-        color="#FFD54A"
-        width="1.6"
-        position="0 -0.55 0.01">
-      </a-text>
-    </a-entity>
+  <a-text
+    value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"
+    align="center"
+    color="yellow"
+    width="1.6"
+    position="0 -0.6 0">
+  </a-text>
+</a-entity>
 
-    <!-- ================= TARGET 3 ================= -->
-    <!-- DAUN SIRIH -->
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model src="#model-sirih"
-        position="0 0 0.05"
-        scale="0.35 0.35 0.35">
-      </a-gltf-model>
+<!-- ================= TARGET 3 ================= -->
+<!-- DAUN SIRIH -->
+<a-entity mindar-image-target="targetIndex: 3">
+  <a-gltf-model src="#sirih"
+    position="0 0 0.1"
+    scale="0.4 0.4 0.4">
+  </a-gltf-model>
 
-      <a-plane position="0 -0.55 0" width="1.7" height="0.9" color="#111" opacity="0.8"></a-plane>
-      <a-text
-        value="DAUN SIRIH (Piper betle)\n\nManfaat:\n- Antiseptik tradisional\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
-        align="center"
-        color="#FFD54A"
-        width="1.6"
-        position="0 -0.55 0.01">
-      </a-text>
-    </a-entity>
+  <a-text
+    value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
+    align="center"
+    color="yellow"
+    width="1.6"
+    position="0 -0.6 0">
+  </a-text>
+</a-entity>
 
-  </a-scene>
+</a-scene>
+
 </body>
 </html>
