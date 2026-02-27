@@ -9,18 +9,59 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
+    body { margin:0; overflow:hidden; font-family:system-ui, Arial; }
+    #hud{
+      position:fixed; left:10px; right:10px; top:10px;
+      background:rgba(0,0,0,.65); color:#fff;
+      padding:8px 10px; border-radius:10px; z-index:9999;
+      font-size:13px; line-height:1.35;
+    }
     .hint{
-      position: fixed; left: 10px; right: 10px; bottom: 10px;
-      background: rgba(0,0,0,.6); color:#fff;
-      padding: 8px 10px; border-radius: 10px; z-index: 9999;
-      font-size: 13px;
+      position:fixed; left:10px; right:10px; bottom:10px;
+      background:rgba(0,0,0,.65); color:#fff;
+      padding:8px 10px; border-radius:10px; z-index:9999;
+      font-size:13px;
     }
   </style>
+
+  <script>
+    // Register setelah DOM siap (lebih aman)
+    window.addEventListener("DOMContentLoaded", () => {
+      // Komponen: paksa model ke tengah + skala otomatis
+      AFRAME.registerComponent("autofit", {
+        schema: { size: { type: "number", default: 0.8 } }, // ukuran max yang diinginkan
+        init: function () {
+          this.el.addEventListener("model-loaded", () => {
+            const obj = this.el.getObject3D("mesh");
+            if (!obj) return;
+
+            // Bounding box
+            const box = new THREE.Box3().setFromObject(obj);
+            const size = new THREE.Vector3();
+            const center = new THREE.Vector3();
+            box.getSize(size);
+            box.getCenter(center);
+
+            // Geser semua mesh supaya center jadi (0,0,0)
+            obj.position.sub(center);
+
+            // Skala supaya dimensi terbesarnya = schema.size
+            const maxDim = Math.max(size.x, size.y, size.z) || 1;
+            const s = this.data.size / maxDim;
+            this.el.object3D.scale.set(s, s, s);
+
+            // Pastikan kelihatan
+            this.el.setAttribute("visible", true);
+          });
+        }
+      });
+    });
+  </script>
 </head>
 
 <body>
-<div class="hint">Allow Camera → arahkan ke gambar (targets.mind)</div>
+<div id="hud">Memuat model 3D…</div>
+<div class="hint">Allow Camera → arahkan ke gambar target</div>
 
 <a-scene
   mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
@@ -31,87 +72,86 @@
 >
   <a-assets timeout="30000">
     <a-asset-item id="m-lidah" src="lidah-buaya.glb"></a-asset-item>
-    <a-asset-item id="m-jahe" src="jahe.glb"></a-asset-item>
+    <a-asset-item id="m-jahe"  src="jahe.glb"></a-asset-item>
     <a-asset-item id="m-kunyit" src="kunyit.glb"></a-asset-item>
     <a-asset-item id="m-sirih" src="daunsirih.glb"></a-asset-item>
   </a-assets>
 
   <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
 
-  <!-- Lighting -->
-  <a-entity light="type: ambient; intensity: 1.2"></a-entity>
-  <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
+  <a-entity light="type: ambient; intensity: 1.3"></a-entity>
+  <a-entity light="type: directional; intensity: 1.3" position="1 2 1"></a-entity>
 
-  <!-- ================= TARGET 0 : LIDAH BUAYA ================= -->
+  <!-- ===== TARGET 0: LIDAH BUAYA ===== -->
   <a-entity mindar-image-target="targetIndex: 0">
-
-    <!-- Wrapper untuk model (lebih stabil) -->
-    <a-entity position="0 0.20 0.30" rotation="0 0 0" scale="0.18 0.18 0.18">
-      <a-gltf-model src="#m-lidah"></a-gltf-model>
+    <a-entity position="0 0.25 0.35" rotation="0 0 0">
+      <a-gltf-model class="mdl" data-name="Lidah Buaya" src="#m-lidah" autofit="size: 0.65"></a-gltf-model>
     </a-entity>
 
-    <!-- Panel teks -->
-    <a-plane position="0 -0.95 0" width="1.7" height="0.70" color="#111" opacity="0.78"></a-plane>
-    <a-text
-      position="0 -0.95 0.02"
-      value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Mendukung pencernaan"
-      align="center"
-      color="#FFD54A"
-      width="1.6">
-    </a-text>
+    <a-plane position="0 -0.95 0" width="1.7" height="0.72" color="#111" opacity="0.78"></a-plane>
+    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
+      value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Mendukung pencernaan"></a-text>
   </a-entity>
 
-  <!-- ================= TARGET 1 : JAHE ================= -->
+  <!-- ===== TARGET 1: JAHE ===== -->
   <a-entity mindar-image-target="targetIndex: 1">
-
-    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
-      <a-gltf-model src="#m-jahe"></a-gltf-model>
+    <a-entity position="0 0.25 0.35" rotation="90 0 0">
+      <a-gltf-model class="mdl" data-name="Jahe" src="#m-jahe" autofit="size: 0.75"></a-gltf-model>
     </a-entity>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.70" color="#111" opacity="0.78"></a-plane>
-    <a-text
-      position="0 -0.95 0.02"
-      value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"
-      align="center"
-      color="#FFD54A"
-      width="1.6">
-    </a-text>
+    <a-plane position="0 -0.95 0" width="1.7" height="0.72" color="#111" opacity="0.78"></a-plane>
+    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
+      value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"></a-text>
   </a-entity>
 
-  <!-- ================= TARGET 2 : KUNYIT ================= -->
+  <!-- ===== TARGET 2: KUNYIT ===== -->
   <a-entity mindar-image-target="targetIndex: 2">
-
-    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
-      <a-gltf-model src="#m-kunyit"></a-gltf-model>
+    <a-entity position="0 0.25 0.35" rotation="90 0 0">
+      <a-gltf-model class="mdl" data-name="Kunyit" src="#m-kunyit" autofit="size: 0.75"></a-gltf-model>
     </a-entity>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.78" color="#111" opacity="0.78"></a-plane>
-    <a-text
-      position="0 -0.95 0.02"
-      value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"
-      align="center"
-      color="#FFD54A"
-      width="1.6">
-    </a-text>
+    <a-plane position="0 -0.95 0" width="1.7" height="0.80" color="#111" opacity="0.78"></a-plane>
+    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
+      value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"></a-text>
   </a-entity>
 
-  <!-- ================= TARGET 3 : DAUN SIRIH ================= -->
+  <!-- ===== TARGET 3: DAUN SIRIH ===== -->
   <a-entity mindar-image-target="targetIndex: 3">
-
-    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
-      <a-gltf-model src="#m-sirih"></a-gltf-model>
+    <a-entity position="0 0.25 0.35" rotation="90 0 0">
+      <a-gltf-model class="mdl" data-name="Daun Sirih" src="#m-sirih" autofit="size: 0.75"></a-gltf-model>
     </a-entity>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.78" color="#111" opacity="0.78"></a-plane>
-    <a-text
-      position="0 -0.95 0.02"
-      value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
-      align="center"
-      color="#FFD54A"
-      width="1.6">
-    </a-text>
+    <a-plane position="0 -0.95 0" width="1.7" height="0.80" color="#111" opacity="0.78"></a-plane>
+    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
+      value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"></a-text>
   </a-entity>
 
 </a-scene>
+
+<script>
+  const hud = document.getElementById("hud");
+  window.addEventListener("load", () => {
+    const models = document.querySelectorAll(".mdl");
+    let ok = 0, err = 0;
+
+    models.forEach((m) => {
+      const name = m.dataset.name || m.getAttribute("src");
+
+      m.addEventListener("model-loaded", () => {
+        ok++;
+        hud.textContent = `✅ Loaded: ${ok}/${models.length} | ❌ Error: ${err} (terakhir: ${name})`;
+        if (ok + err === models.length && err === 0) {
+          setTimeout(() => hud.style.display = "none", 1200);
+        }
+      });
+
+      m.addEventListener("model-error", () => {
+        err++;
+        hud.textContent = `❌ Ada GLB gagal load (${err}). Terakhir: ${name}`;
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
