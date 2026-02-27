@@ -7,9 +7,21 @@
 
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body { margin: 0; overflow: hidden; font-family: system-ui, Arial; }
+    .hint{
+      position: fixed; left: 10px; right: 10px; bottom: 10px;
+      background: rgba(0,0,0,.6); color:#fff;
+      padding: 8px 10px; border-radius: 10px; z-index: 9999;
+      font-size: 13px;
+    }
+  </style>
 </head>
 
 <body>
+<div class="hint">Allow Camera → arahkan ke gambar (targets.mind)</div>
+
 <a-scene
   mindar-image="imageTargetSrc: targets.mind; autoStart: true;"
   color-space="sRGB"
@@ -18,69 +30,85 @@
   device-orientation-permission-ui="enabled:true"
 >
   <a-assets timeout="30000">
-    <a-asset-item id="lidah" src="lidah-buaya.glb"></a-asset-item>
-    <a-asset-item id="jahe" src="jahe.glb"></a-asset-item>
-    <a-asset-item id="kunyit" src="kunyit.glb"></a-asset-item>
-    <a-asset-item id="sirih" src="daunsirih.glb"></a-asset-item>
+    <a-asset-item id="m-lidah" src="lidah-buaya.glb"></a-asset-item>
+    <a-asset-item id="m-jahe" src="jahe.glb"></a-asset-item>
+    <a-asset-item id="m-kunyit" src="kunyit.glb"></a-asset-item>
+    <a-asset-item id="m-sirih" src="daunsirih.glb"></a-asset-item>
   </a-assets>
 
   <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+
+  <!-- Lighting -->
   <a-entity light="type: ambient; intensity: 1.2"></a-entity>
   <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-  <!-- TARGET 0: Lidah Buaya -->
+  <!-- ================= TARGET 0 : LIDAH BUAYA ================= -->
   <a-entity mindar-image-target="targetIndex: 0">
-    <a-gltf-model src="#lidah"
-      position="0 0 0.25"
-      rotation="0 0 0"
-      scale="0.2 0.2 0.2">
-    </a-gltf-model>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.65" color="#111" opacity="0.75"></a-plane>
-    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
-      value="LIDAH BUAYA\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Baik untuk pencernaan">
+    <!-- Wrapper untuk model (lebih stabil) -->
+    <a-entity position="0 0.20 0.30" rotation="0 0 0" scale="0.18 0.18 0.18">
+      <a-gltf-model src="#m-lidah"></a-gltf-model>
+    </a-entity>
+
+    <!-- Panel teks -->
+    <a-plane position="0 -0.95 0" width="1.7" height="0.70" color="#111" opacity="0.78"></a-plane>
+    <a-text
+      position="0 -0.95 0.02"
+      value="LIDAH BUAYA\n\nManfaat:\n- Menenangkan iritasi kulit\n- Melembapkan kulit\n- Mendukung pencernaan"
+      align="center"
+      color="#FFD54A"
+      width="1.6">
     </a-text>
   </a-entity>
 
-  <!-- TARGET 1: Jahe -->
+  <!-- ================= TARGET 1 : JAHE ================= -->
   <a-entity mindar-image-target="targetIndex: 1">
-    <a-gltf-model src="#jahe"
-      position="0 0.15 0.25"
-      rotation="90 0 0"
-      scale="6 6 6">
-    </a-gltf-model>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.65" color="#111" opacity="0.75"></a-plane>
-    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
-      value="JAHE\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi">
+    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
+      <a-gltf-model src="#m-jahe"></a-gltf-model>
+    </a-entity>
+
+    <a-plane position="0 -0.95 0" width="1.7" height="0.70" color="#111" opacity="0.78"></a-plane>
+    <a-text
+      position="0 -0.95 0.02"
+      value="JAHE\n\nManfaat:\n- Menghangatkan tubuh\n- Mengurangi mual\n- Anti inflamasi"
+      align="center"
+      color="#FFD54A"
+      width="1.6">
     </a-text>
   </a-entity>
 
-  <!-- TARGET 2: Kunyit -->
+  <!-- ================= TARGET 2 : KUNYIT ================= -->
   <a-entity mindar-image-target="targetIndex: 2">
-    <a-gltf-model src="#kunyit"
-      position="0 0.15 0.25"
-      rotation="90 0 0"
-      scale="6 6 6">
-    </a-gltf-model>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.7" color="#111" opacity="0.75"></a-plane>
-    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
-      value="KUNYIT\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh">
+    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
+      <a-gltf-model src="#m-kunyit"></a-gltf-model>
+    </a-entity>
+
+    <a-plane position="0 -0.95 0" width="1.7" height="0.78" color="#111" opacity="0.78"></a-plane>
+    <a-text
+      position="0 -0.95 0.02"
+      value="KUNYIT\n\nManfaat:\n- Anti inflamasi\n- Membantu pencernaan\n- Meningkatkan daya tahan tubuh"
+      align="center"
+      color="#FFD54A"
+      width="1.6">
     </a-text>
   </a-entity>
 
-  <!-- TARGET 3: Daun Sirih -->
+  <!-- ================= TARGET 3 : DAUN SIRIH ================= -->
   <a-entity mindar-image-target="targetIndex: 3">
-    <a-gltf-model src="#sirih"
-      position="0 0.15 0.25"
-      rotation="90 0 0"
-      scale="6 6 6">
-    </a-gltf-model>
 
-    <a-plane position="0 -0.95 0" width="1.7" height="0.7" color="#111" opacity="0.75"></a-plane>
-    <a-text position="0 -0.95 0.02" width="1.6" align="center" color="#FFD54A"
-      value="DAUN SIRIH\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan">
+    <a-entity position="0 0.20 0.30" rotation="90 0 0" scale="8 8 8">
+      <a-gltf-model src="#m-sirih"></a-gltf-model>
+    </a-entity>
+
+    <a-plane position="0 -0.95 0" width="1.7" height="0.78" color="#111" opacity="0.78"></a-plane>
+    <a-text
+      position="0 -0.95 0.02"
+      value="DAUN SIRIH\n\nManfaat:\n- Antiseptik alami\n- Menjaga kebersihan mulut\n- Mengurangi bau badan"
+      align="center"
+      color="#FFD54A"
+      width="1.6">
     </a-text>
   </a-entity>
 
