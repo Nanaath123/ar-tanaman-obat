@@ -9,39 +9,29 @@
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
-    html, body {
-      margin: 0; padding: 0;
-      width: 100%; height: 100%;
-      overflow: hidden;
-      background: #000;
-    }
-    a-scene {
-      position: fixed !important;
-      inset: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      z-index: 1;
-    }
-    #hud{
-      position: fixed; left: 10px; right: 10px; top: 10px;
-      background: rgba(0,0,0,.72); color: #fff;
-      padding: 10px 12px; border-radius: 12px;
-      z-index: 9999;
-      font: 13px/1.35 system-ui, Arial;
-      white-space: pre-line;
-    }
+    html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
+    a-scene { position:fixed !important; inset:0 !important; width:100% !important; height:100% !important; }
+
     .hint{
-      position: fixed; left: 10px; right: 10px; bottom: 10px;
-      background: rgba(0,0,0,.60); color: #fff;
-      padding: 8px 10px; border-radius: 10px;
-      z-index: 9999;
-      font: 13px/1.35 system-ui, Arial;
-      text-align: center;
+      position:fixed; left:10px; right:10px; bottom:10px;
+      background:rgba(0,0,0,.60); color:#fff;
+      padding:8px 10px; border-radius:10px; z-index:9999;
+      font:13px/1.35 system-ui, Arial; text-align:center;
     }
+
+    #startBtn{
+      position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.75); z-index:10000;
+      font:16px system-ui, Arial; color:#fff; text-align:center; padding:20px;
+    }
+    #startBtn button{
+      padding:12px 16px; border:0; border-radius:12px; font-weight:600;
+    }
+    #msg{ margin-top:12px; font-size:13px; opacity:.9; }
   </style>
 
   <script>
-    // Autofit: auto-center + auto-scale biar semua GLB (pivot beda-beda) tetap kelihatan
+    // Autofit biar model yang pivot/ukuran beda tetap kelihatan
     AFRAME.registerComponent("autofit", {
       schema: { size: { type: "number", default: 0.7 } },
       init: function () {
@@ -55,10 +45,8 @@
           box.getSize(size);
           box.getCenter(center);
 
-          // center ke origin entity
           mesh.position.sub(center);
 
-          // scale supaya muat
           const maxDim = Math.max(size.x, size.y, size.z) || 1;
           const s = this.data.size / maxDim;
           this.el.object3D.scale.set(s, s, s);
@@ -69,110 +57,95 @@
 </head>
 
 <body>
-  <div id="hud">Loading…</div>
+  <div id="startBtn">
+    <div>
+      <div style="font-size:18px; font-weight:700;">AR Tanaman Obat</div>
+      <div id="msg">Klik tombol untuk menyalakan kamera (wajib izin kamera).</div>
+      <div style="margin-top:14px;">
+        <button id="btn">Mulai Kamera</button>
+      </div>
+    </div>
+  </div>
+
   <div class="hint">Allow Camera → arahkan ke gambar target</div>
 
   <a-scene
-    embedded
-    mindar-image="imageTargetSrc: ./targets.mind; autoStart: true;"
+    mindar-image="imageTargetSrc: ./targets.mind; autoStart: false;"
+    renderer="colorManagement:true; physicallyCorrectLights:true"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
-    renderer="colorManagement:true; physicallyCorrectLights:true; alpha:true"
-    background="transparent: true"
     color-space="sRGB"
   >
     <a-assets timeout="60000">
-      <!-- pastikan NAMA FILE persis sama dengan yang di repo -->
-      <a-asset-item id="m-lidah" src="./lidah-buaya.glb"></a-asset-item>
-      <a-asset-item id="m-jahe"  src="./jahe.glb"></a-asset-item>
+      <a-asset-item id="m-lidah"  src="./lidah-buaya.glb"></a-asset-item>
+      <a-asset-item id="m-jahe"   src="./jahe.glb"></a-asset-item>
       <a-asset-item id="m-kunyit" src="./kunyit.glb"></a-asset-item>
-      <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
+      <a-asset-item id="m-sirih"  src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- WAJIB: mindar-image-camera (kalau tidak, sering putih/hitam) -->
-    <a-camera
+    <!-- PENTING: pakai mindar-image-camera di ENTITY -->
+    <a-entity
       mindar-image-camera="enabled: true"
-      position="0 0 0"
-      look-controls="enabled:false"
       camera="near:0.01; far:1000"
-    ></a-camera>
+      look-controls="enabled:false"
+      position="0 0 0"
+    ></a-entity>
 
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-    <!-- TARGET 0 -->
+    <!-- Target 0 -->
     <a-entity mindar-image-target="targetIndex: 0">
-      <!-- parent diposisikan sedikit ke atas agar tidak “nabrak” marker -->
       <a-entity position="0 0.15 0">
-        <a-gltf-model class="mdl" data-name="Lidah Buaya"
-          src="#m-lidah"
-          rotation="0 0 0"
-          autofit="size: 0.75"
-        ></a-gltf-model>
+        <a-gltf-model src="#m-lidah" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 1 -->
+    <!-- Target 1 -->
     <a-entity mindar-image-target="targetIndex: 1">
       <a-entity position="0 0.15 0">
-        <a-gltf-model class="mdl" data-name="Jahe"
-          src="#m-jahe"
-          rotation="0 0 0"
-          autofit="size: 0.75"
-        ></a-gltf-model>
+        <a-gltf-model src="#m-jahe" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 2 -->
+    <!-- Target 2 -->
     <a-entity mindar-image-target="targetIndex: 2">
       <a-entity position="0 0.15 0">
-        <a-gltf-model class="mdl" data-name="Kunyit"
-          src="#m-kunyit"
-          rotation="0 0 0"
-          autofit="size: 0.75"
-        ></a-gltf-model>
+        <a-gltf-model src="#m-kunyit" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 3 -->
+    <!-- Target 3 -->
     <a-entity mindar-image-target="targetIndex: 3">
       <a-entity position="0 0.15 0">
-        <a-gltf-model class="mdl" data-name="Daun Sirih"
-          src="#m-sirih"
-          rotation="0 0 0"
-          autofit="size: 0.75"
-        ></a-gltf-model>
+        <a-gltf-model src="#m-sirih" autofit="size:0.75"></a-gltf-model>
       </a-entity>
     </a-entity>
-
   </a-scene>
 
   <script>
-    const hud = document.getElementById("hud");
+    const btn = document.getElementById("btn");
+    const startOverlay = document.getElementById("startBtn");
+    const msg = document.getElementById("msg");
+    const sceneEl = document.querySelector("a-scene");
 
-    window.addEventListener("load", () => {
-      const models = document.querySelectorAll(".mdl");
-      let ok = 0, err = 0;
+    btn.addEventListener("click", async () => {
+      try {
+        // start AR setelah user klik (anti diblokir autoplay)
+        await sceneEl.systems["mindar-image-system"].start();
+        startOverlay.style.display = "none";
+      } catch (e) {
+        console.log(e);
+        msg.textContent =
+          "Gagal menyalakan kamera. Cek izin kamera di Chrome (Site settings → Camera → Allow), lalu refresh.";
+      }
+    });
 
-      hud.textContent = `Loading model: 0/${models.length}`;
-
-      models.forEach((m) => {
-        const name = m.dataset.name || "model";
-
-        m.addEventListener("model-loaded", () => {
-          ok++;
-          hud.textContent = `✅ Loaded: ${ok}/${models.length}\n❌ Error: ${err}`;
-          if (ok + err === models.length && err === 0) {
-            setTimeout(() => (hud.style.display = "none"), 1200);
-          }
-        });
-
-        m.addEventListener("model-error", (e) => {
-          err++;
-          hud.textContent = `❌ Gagal load GLB: ${name}\nCek nama file / path / ukuran file.\nError: ${err}`;
-          console.log("MODEL ERROR", name, e);
-        });
-      });
+    // stop saat pindah tab biar stabil
+    document.addEventListener("visibilitychange", () => {
+      const sys = sceneEl.systems["mindar-image-system"];
+      if (!sys) return;
+      if (document.hidden) sys.stop();
     });
   </script>
 </body>
