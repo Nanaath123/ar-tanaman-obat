@@ -10,14 +10,6 @@
 
   <style>
     html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
-    .hint{
-      position:fixed; left:10px; right:10px; bottom:10px;
-      background:rgba(0,0,0,.60); color:#fff;
-      padding:8px 10px; border-radius:10px;
-      font:13px/1.35 system-ui, Arial;
-      text-align:center;
-      z-index:9999;
-    }
     #hud{
       position:fixed; left:10px; right:10px; top:10px;
       background:rgba(0,0,0,.72); color:#fff;
@@ -26,33 +18,54 @@
       white-space:pre-line;
       z-index:9999;
     }
+    .hint{
+      position:fixed; left:10px; right:10px; bottom:10px;
+      background:rgba(0,0,0,.60); color:#fff;
+      padding:8px 10px; border-radius:10px;
+      font:13px/1.35 system-ui, Arial;
+      text-align:center;
+      z-index:9999;
+    }
   </style>
 
   <script>
-    // Autofit: bikin model auto-center + auto-scale (supaya tidak kepotong / hilang karena pivot)
+    // Auto-center + auto-scale supaya model tidak kepotong / tidak hilang karena pivot beda-beda
     AFRAME.registerComponent("autofit", {
-      schema: { size: { type: "number", default: 0.7 } },
+      schema: { size: { type: "number", default: 0.6 } },
       init: function () {
         this.el.addEventListener("model-loaded", () => {
-          const mesh = this.el.getObject3D("mesh");
-          if (!mesh) return;
+          const obj = this.el.getObject3D("mesh");
+          if (!obj) return;
 
-          const box = new THREE.Box3().setFromObject(mesh);
+          const box = new THREE.Box3().setFromObject(obj);
           const size = new THREE.Vector3();
           const center = new THREE.Vector3();
           box.getSize(size);
           box.getCenter(center);
 
-          // center mesh ke origin entity
-          mesh.position.sub(center);
+          // center object ke origin entity
+          obj.position.sub(center);
 
-          // skala agar muat
+          // scale agar muat
           const maxDim = Math.max(size.x, size.y, size.z) || 1;
           const s = this.data.size / maxDim;
           this.el.object3D.scale.set(s, s, s);
 
-          // pastikan terlihat
           this.el.setAttribute("visible", true);
+        });
+      }
+    });
+
+    // Debug: tampilkan target index saat ter-detect
+    AFRAME.registerComponent("target-debug", {
+      schema: { name: {type:"string", default:""} },
+      init: function () {
+        const hud = document.getElementById("hud");
+        this.el.addEventListener("targetFound", () => {
+          hud.textContent = "✅ Target terdeteksi: " + (this.data.name || "-");
+        });
+        this.el.addEventListener("targetLost", () => {
+          hud.textContent = "🔎 Arahkan ke gambar target...";
         });
       }
     });
@@ -60,76 +73,76 @@
 </head>
 
 <body>
-  <div id="hud">Loading assets…</div>
+  <div id="hud">🔎 Arahkan ke gambar target...</div>
   <div class="hint">Allow Camera → arahkan ke gambar target</div>
 
+  <!-- JANGAN pakai alpha:true + background transparent (sering bikin hitam) -->
   <a-scene
     mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: true; uiScanning: true;"
-    renderer="colorManagement:true; physicallyCorrectLights:true; antialias:true;"
+    renderer="colorManagement:true; physicallyCorrectLights:true; antialias:true"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
     color-space="sRGB"
   >
     <a-assets timeout="120000">
-      <a-asset-item id="m-lidah"  src="./lidah-buaya.glb"></a-asset-item>
-      <a-asset-item id="m-jahe"   src="./jahe.glb"></a-asset-item>
+      <a-asset-item id="m-lidah" src="./lidah-buaya.glb"></a-asset-item>
+      <a-asset-item id="m-jahe"  src="./jahe.glb"></a-asset-item>
       <a-asset-item id="m-kunyit" src="./kunyit.glb"></a-asset-item>
-      <a-asset-item id="m-sirih"  src="./daunsirih.glb"></a-asset-item>
+      <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- WAJIB untuk MindAR -->
-    <a-camera
-      mindar-image-camera="enabled: true"
-      position="0 0 0"
-      look-controls="enabled:false"
-      camera="near:0.01; far:1000"
-    ></a-camera>
+    <!-- Pakai camera biasa (ini yang sudah terbukti di punyamu tampil kamera) -->
+    <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
 
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
     <!-- TARGET 0: Lidah Buaya -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-gltf-model class="mdl" data-name="Lidah Buaya"
-        src="#m-lidah"
-        position="0 0 0"
-        rotation="0 0 0"
-        visible="false"
-        autofit="size: 0.75"
-      ></a-gltf-model>
+    <a-entity mindar-image-target="targetIndex: 0" target-debug="name: Lidah Buaya">
+      <a-entity position="0 0.10 0">
+        <a-gltf-model class="mdl" data-name="Lidah Buaya"
+          src="#m-lidah"
+          rotation="0 0 0"
+          visible="false"
+          autofit="size: 0.60"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- TARGET 1: Jahe -->
-    <a-entity mindar-image-target="targetIndex: 1">
-      <a-gltf-model class="mdl" data-name="Jahe"
-        src="#m-jahe"
-        position="0 0 0"
-        rotation="0 0 0"
-        visible="false"
-        autofit="size: 0.60"
-      ></a-gltf-model>
+    <!-- TARGET 1: Jahe (dibuat lebih kecil supaya tidak kepotong) -->
+    <a-entity mindar-image-target="targetIndex: 1" target-debug="name: Jahe">
+      <a-entity position="0 0.10 0">
+        <a-gltf-model class="mdl" data-name="Jahe"
+          src="#m-jahe"
+          rotation="0 0 0"
+          visible="false"
+          autofit="size: 0.40"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
-    <!-- TARGET 2: Kunyit -->
-    <a-entity mindar-image-target="targetIndex: 2">
-      <a-gltf-model class="mdl" data-name="Kunyit"
-        src="#m-kunyit"
-        position="0 0 0"
-        rotation="0 0 0"
-        visible="false"
-        autofit="size: 0.60"
-      ></a-gltf-model>
+    <!-- TARGET 2: Kunyit (biasanya pivot aneh, kita kecilkan + naikkan sedikit) -->
+    <a-entity mindar-image-target="targetIndex: 2" target-debug="name: Kunyit">
+      <a-entity position="0 0.12 0">
+        <a-gltf-model class="mdl" data-name="Kunyit"
+          src="#m-kunyit"
+          rotation="0 0 0"
+          visible="false"
+          autofit="size: 0.45"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
     <!-- TARGET 3: Daun Sirih -->
-    <a-entity mindar-image-target="targetIndex: 3">
-      <a-gltf-model class="mdl" data-name="Daun Sirih"
-        src="#m-sirih"
-        position="0 0 0"
-        rotation="0 0 0"
-        visible="false"
-        autofit="size: 0.65"
-      ></a-gltf-model>
+    <a-entity mindar-image-target="targetIndex: 3" target-debug="name: Daun Sirih">
+      <a-entity position="0 0.10 0">
+        <a-gltf-model class="mdl" data-name="Daun Sirih"
+          src="#m-sirih"
+          rotation="0 0 0"
+          visible="false"
+          autofit="size: 0.55"
+        ></a-gltf-model>
+      </a-entity>
     </a-entity>
 
   </a-scene>
@@ -140,23 +153,29 @@
     window.addEventListener("load", () => {
       const models = document.querySelectorAll(".mdl");
       let ok = 0, err = 0;
-      hud.textContent = `Loading model: 0/${models.length}`;
+
+      function updateHud() {
+        hud.textContent =
+          `🔎 Arahkan ke gambar target...\n` +
+          `✅ Loaded: ${ok}/${models.length} | ❌ Error: ${err}`;
+      }
+      updateHud();
 
       models.forEach((m) => {
         const name = m.dataset.name || "model";
 
         m.addEventListener("model-loaded", () => {
           ok++;
-          hud.textContent = `✅ Loaded: ${ok}/${models.length}\n❌ Error: ${err}`;
-          if (ok + err === models.length && err === 0) {
-            setTimeout(() => (hud.style.display = "none"), 1200);
-          }
+          updateHud();
         });
 
         m.addEventListener("model-error", (e) => {
           err++;
-          hud.textContent = `❌ Gagal load GLB: ${name}\nCek nama file / ukuran file.\nError: ${err}`;
-          console.log("MODEL ERROR:", name, e);
+          hud.textContent =
+            `❌ Gagal load GLB: ${name}\n` +
+            `Cek nama file / path / ukuran file.\n` +
+            `Buka DevTools Console untuk detail error.`;
+          console.log("MODEL ERROR", name, e);
         });
       });
     });
