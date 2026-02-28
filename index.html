@@ -10,42 +10,23 @@
 
   <style>
     html, body { margin:0; padding:0; width:100%; height:100%; overflow:hidden; background:#000; }
-
-    #hud{
-      position:fixed; left:10px; right:10px; top:10px;
-      background:rgba(0,0,0,.72); color:#fff;
-      padding:10px 12px; border-radius:12px;
-      font:13px/1.35 system-ui, Arial;
-      white-space:pre-line;
-      z-index:9999;
-    }
     .hint{
       position:fixed; left:10px; right:10px; bottom:10px;
       background:rgba(0,0,0,.60); color:#fff;
-      padding:8px 10px; border-radius:10px;
+      padding:8px 10px; border-radius:10px; z-index:9999;
       font:13px/1.35 system-ui, Arial;
       text-align:center;
-      z-index:9999;
     }
-
-    /* tombol start */
-    #startBtn{
-      position:fixed; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      z-index:10000;
-      background:rgba(0,0,0,.75);
-    }
-    #startBtn button{
-      font:600 16px system-ui, Arial;
-      padding:12px 16px;
-      border-radius:12px;
-      border:0;
-      cursor:pointer;
+    #hud{
+      position:fixed; left:10px; right:10px; top:10px;
+      background:rgba(0,0,0,.72); color:#fff;
+      padding:10px 12px; border-radius:12px; z-index:9999;
+      font:13px/1.35 system-ui, Arial; white-space:pre-line;
     }
   </style>
 
   <script>
-    // Auto-center + auto-scale supaya model tidak kepotong / tidak hilang
+    // Auto-center + auto-scale supaya semua GLB tampil utuh walau pivot/ukuran beda
     AFRAME.registerComponent("autofit", {
       schema: { size: { type: "number", default: 0.6 } },
       init: function () {
@@ -69,36 +50,18 @@
         });
       }
     });
-
-    AFRAME.registerComponent("target-debug", {
-      schema: { name: {type:"string", default:""} },
-      init: function () {
-        const hud = document.getElementById("hud");
-        this.el.addEventListener("targetFound", () => {
-          hud.textContent = "✅ Target terdeteksi: " + (this.data.name || "-");
-        });
-        this.el.addEventListener("targetLost", () => {
-          // jangan timpa status load model
-        });
-      }
-    });
   </script>
 </head>
 
 <body>
-  <div id="hud">🔎 Tekan "Mulai Kamera" dulu…</div>
+  <div id="hud">Memuat model…</div>
   <div class="hint">Allow Camera → arahkan ke gambar target</div>
 
-  <div id="startBtn">
-    <button id="btn">📷 Mulai Kamera</button>
-  </div>
-
-  <!-- AUTO START OFF (biar aman dari aturan browser) -->
   <a-scene
-    mindar-image="imageTargetSrc: ./targets.mind; autoStart: false; uiLoading: true; uiScanning: true;"
-    renderer="colorManagement:true; physicallyCorrectLights:true; antialias:true"
+    mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiScanning: true; uiLoading: true;"
     vr-mode-ui="enabled:false"
     device-orientation-permission-ui="enabled:true"
+    renderer="colorManagement:true; physicallyCorrectLights:true; antialias:true"
     color-space="sRGB"
   >
     <a-assets timeout="120000">
@@ -108,89 +71,64 @@
       <a-asset-item id="m-sirih" src="./daunsirih.glb"></a-asset-item>
     </a-assets>
 
-    <!-- PAKAI mindar-image-camera -->
-    <a-camera
-      mindar-image-camera="enabled: true"
-      position="0 0 0"
-      look-controls="enabled:false"
-      camera="near:0.01; far:1000"
-    ></a-camera>
+    <!-- PENTING: pakai a-camera biasa -->
+    <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
 
     <a-entity light="type: ambient; intensity: 1.2"></a-entity>
     <a-entity light="type: directional; intensity: 1.2" position="1 2 1"></a-entity>
 
-    <!-- TARGET 0 -->
-    <a-entity mindar-image-target="targetIndex: 0" target-debug="name: Lidah Buaya">
-      <a-entity position="0 0.10 0">
+    <!-- target 0: lidah buaya -->
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-entity position="0 0.12 0">
         <a-gltf-model class="mdl" data-name="Lidah Buaya"
           src="#m-lidah" visible="false" rotation="0 0 0"
-          autofit="size: 0.60"></a-gltf-model>
+          autofit="size:0.60"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 1 -->
-    <a-entity mindar-image-target="targetIndex: 1" target-debug="name: Jahe">
-      <a-entity position="0 0.10 0">
+    <!-- target 1: jahe (diperkecil biar ga kepotong) -->
+    <a-entity mindar-image-target="targetIndex: 1">
+      <a-entity position="0 0.12 0">
         <a-gltf-model class="mdl" data-name="Jahe"
           src="#m-jahe" visible="false" rotation="0 0 0"
-          autofit="size: 0.40"></a-gltf-model>
+          autofit="size:0.40"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 2 -->
-    <a-entity mindar-image-target="targetIndex: 2" target-debug="name: Kunyit">
+    <!-- target 2: kunyit -->
+    <a-entity mindar-image-target="targetIndex: 2">
       <a-entity position="0 0.12 0">
         <a-gltf-model class="mdl" data-name="Kunyit"
           src="#m-kunyit" visible="false" rotation="0 0 0"
-          autofit="size: 0.45"></a-gltf-model>
+          autofit="size:0.45"></a-gltf-model>
       </a-entity>
     </a-entity>
 
-    <!-- TARGET 3 -->
-    <a-entity mindar-image-target="targetIndex: 3" target-debug="name: Daun Sirih">
-      <a-entity position="0 0.10 0">
+    <!-- target 3: daun sirih -->
+    <a-entity mindar-image-target="targetIndex: 3">
+      <a-entity position="0 0.12 0">
         <a-gltf-model class="mdl" data-name="Daun Sirih"
           src="#m-sirih" visible="false" rotation="0 0 0"
-          autofit="size: 0.55"></a-gltf-model>
+          autofit="size:0.55"></a-gltf-model>
       </a-entity>
     </a-entity>
-
   </a-scene>
 
   <script>
     const hud = document.getElementById("hud");
-    const btn = document.getElementById("btn");
-    const startLayer = document.getElementById("startBtn");
-
-    function updateHud(ok, total, err){
-      hud.textContent = `🔎 Arahkan ke gambar target...\n✅ Loaded: ${ok}/${total} | ❌ Error: ${err}`;
-    }
-
     window.addEventListener("load", () => {
       const models = document.querySelectorAll(".mdl");
       let ok = 0, err = 0;
 
+      function setHud(){
+        hud.textContent = `Arahkan ke gambar target...\n✅ Loaded: ${ok}/${models.length} | ❌ Error: ${err}`;
+      }
+      setHud();
+
       models.forEach((m) => {
         const name = m.dataset.name || "model";
-        m.addEventListener("model-loaded", () => { ok++; updateHud(ok, models.length, err); });
-        m.addEventListener("model-error", (e) => {
-          err++; updateHud(ok, models.length, err);
-          console.log("MODEL ERROR", name, e);
-        });
-      });
-
-      btn.addEventListener("click", async () => {
-        try {
-          const sceneEl = document.querySelector("a-scene");
-          const mindarSystem = sceneEl.systems["mindar-image-system"];
-          hud.textContent = "📷 Memulai kamera...";
-          await mindarSystem.start();   // <-- ini yang bikin kamera benar-benar jalan
-          startLayer.style.display = "none";
-          updateHud(ok, models.length, err);
-        } catch (e) {
-          hud.textContent = "❌ Kamera gagal start. Coba reload & izinkan kamera.\nLihat Console untuk detail.";
-          console.log("START ERROR", e);
-        }
+        m.addEventListener("model-loaded", () => { ok++; setHud(); if(ok+err===models.length) setTimeout(()=>hud.style.display="none",1200); });
+        m.addEventListener("model-error", (e) => { err++; setHud(); console.log("MODEL ERROR", name, e); });
       });
     });
   </script>
